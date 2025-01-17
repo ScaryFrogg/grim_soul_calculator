@@ -13,6 +13,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("/", s.HelloWorldHandler)
 
 	mux.HandleFunc("/health", s.healthHandler)
+	mux.HandleFunc("/weapons", s.WeaponDataHandler)
+	mux.HandleFunc("GET /enemies", s.GetEnemiesHandeler)
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)
@@ -35,6 +37,31 @@ func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 		// Proceed with the next handler
 		next.ServeHTTP(w, r)
 	})
+}
+
+func (s *Server) WeaponDataHandler(w http.ResponseWriter, r *http.Request) {
+
+	resp, err := json.Marshal(s.db.WeaponData())
+	if err != nil {
+		http.Error(w, "Failed to marshal weapon data", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(resp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
+}
+
+func (s *Server) GetEnemiesHandeler(w http.ResponseWriter, r *http.Request) {
+	resp, err := json.Marshal(s.db.GetEnemies())
+	if err != nil {
+		http.Error(w, "Failed to marshal enemies data", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(resp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
 }
 
 func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {

@@ -15,6 +15,8 @@ import (
 
 // Service represents a service that interacts with a database.
 type Service interface {
+	WeaponData() []Weapon
+	GetEnemies() []Enemy
 	// Health returns a map of health status information.
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
@@ -32,6 +34,46 @@ var (
 	dburl      = os.Getenv("BLUEPRINT_DB_URL")
 	dbInstance *service
 )
+
+func (s *service) WeaponData() []Weapon {
+	q := "SELECT name, damage, attack_speed as attackSpeed, s1,s2,s3,s4,s5 FROM weapon INNER JOIN sharpen ON weapon.id = sharpen.weapon_id"
+	weapons := make([]Weapon, 0, 32)
+	rows, err := s.db.Query(q)
+	if err != nil {
+		log.Fatalf("Getting weapons data failed: %v", err) // Log the error and terminate the program
+		return weapons
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var weapon Weapon
+		if err := rows.Scan(&weapon.Name, &weapon.Damage, &weapon.AttackSpeed, &weapon.S1, &weapon.S2, &weapon.S3, &weapon.S4, &weapon.S5); err != nil {
+			log.Fatalf("Failed Parsing weapons row: %v", err) // Log the error and terminate the program
+			return weapons
+		}
+		weapons = append(weapons, weapon)
+	}
+	return weapons
+}
+
+func (s *service) GetEnemies() []Enemy {
+	q := "select name, health, armor from enemy"
+	enemies := make([]Enemy, 0, 200)
+	rows, err := s.db.Query(q)
+	if err != nil {
+		log.Fatalf("Getting enemies data failed: %v", err) // Log the error and terminate the program
+		return enemies
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var enemy Enemy
+		if err := rows.Scan(&enemy.Name, &enemy.Health, &enemy.Armor); err != nil {
+			log.Fatalf("Failed Parsing enemies row: %v", err) // Log the error and terminate the program
+			return enemies
+		}
+		enemies = append(enemies, enemy)
+	}
+	return enemies
+}
 
 func New() Service {
 	// Reuse Connection
