@@ -16,3 +16,13 @@ type Enemy struct {
 	Health int    `json:"health"`
 	Armor  int    `json:"armor"`
 }
+
+type Blueprint struct {
+	Name         string        `json:"name"`
+	Requirements []Requirement `json:"requirements"`
+}
+
+type Requirement struct {
+	Name     string `json:"name"`
+	Quantity int    `json:"quantity"`
+}

@@ -17,6 +17,8 @@ import (
 type Service interface {
 	WeaponData() []Weapon
 	GetEnemies() []Enemy
+	GetDesigns() []string
+	GetRequirements(design string) []Requirement
 	// Health returns a map of health status information.
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
@@ -34,6 +36,50 @@ var (
 	dburl      = os.Getenv("BLUEPRINT_DB_URL")
 	dbInstance *service
 )
+
+func (s *service) GetDesigns() []string {
+	q := "select name from design"
+	requiremets := make([]string, 0, 10)
+	rows, err := s.db.Query(q)
+	if err != nil {
+		log.Fatalf("Getting designs data failed: %v", err) // Log the error and terminate the program
+		return requiremets
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			log.Fatalf("Failed Parsing designgs row: %v", err) // Log the error and terminate the program
+			return requiremets
+		}
+		requiremets = append(requiremets, name)
+	}
+	return requiremets
+}
+
+func (s *service) GetRequirements(design string) []Requirement {
+	q := `SELECT material.name, quantity
+		FROM craft_requirement
+		INNER JOIN design on design.id = design_id
+		INNER JOIN material on material.id = material_id
+		where design.id = ?`
+	requiremets := make([]Requirement, 0, 10)
+	rows, err := s.db.Query(q, design)
+	if err != nil {
+		log.Fatalf("Getting requirement data failed: %v", err) // Log the error and terminate the program
+		return requiremets
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var req Requirement
+		if err := rows.Scan(&req.Name, &req.Quantity); err != nil {
+			log.Fatalf("Failed Parsing requiremets row: %v", err) // Log the error and terminate the program
+			return requiremets
+		}
+		requiremets = append(requiremets, req)
+	}
+	return requiremets
+}
 
 func (s *service) WeaponData() []Weapon {
 	q := "SELECT name, damage, attack_speed as attackSpeed, s1,s2,s3,s4,s5 FROM weapon INNER JOIN sharpen ON weapon.id = sharpen.weapon_id"
