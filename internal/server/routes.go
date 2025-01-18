@@ -12,9 +12,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Register routes
 	mux.HandleFunc("/", s.HelloWorldHandler)
 
-	mux.HandleFunc("/health", s.healthHandler)
-	mux.HandleFunc("/weapons", s.WeaponDataHandler)
-	mux.HandleFunc("/designs", s.DesingnsHandler)
+	mux.HandleFunc("GET /health", s.healthHandler)
+	mux.HandleFunc("GET /weapons", s.WeaponDataHandler)
+	mux.HandleFunc("GET /designs", s.DesingnsHandler)
+	mux.HandleFunc("GET /design/{id}", s.GetBlueprintHandler)
 	mux.HandleFunc("GET /enemies", s.GetEnemiesHandeler)
 	mux.HandleFunc("GET /requirement/{id}", s.RequirementHandler)
 
@@ -64,6 +65,32 @@ func (s *Server) RequirementHandler(w http.ResponseWriter, r *http.Request) {
 	if _, err := w.Write(resp); err != nil {
 		log.Printf("Failed to write response: %v", err)
 	}
+}
+
+func (s *Server) GetBlueprintHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if id == "0" {
+		http.Error(w, "Id cant be nil/0", http.StatusNotFound)
+		return
+	}
+	//get design
+	design := s.db.GetDesign(id)
+
+	//get requirements
+	requirements := s.db.GetRequirements(id)
+	design.Requirements = requirements
+
+	resp, err := json.Marshal(design)
+	if err != nil {
+		http.Error(w, "Failed to marshal design data", http.StatusInternalServerError)
+		return
+	}
+	//write response
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(resp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
+
 }
 
 func (s *Server) WeaponDataHandler(w http.ResponseWriter, r *http.Request) {

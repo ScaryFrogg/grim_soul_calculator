@@ -18,6 +18,7 @@ type Service interface {
 	WeaponData() []Weapon
 	GetEnemies() []Enemy
 	GetDesigns() []string
+	GetDesign(id string) Blueprint
 	GetRequirements(design string) []Requirement
 	// Health returns a map of health status information.
 	// The keys and values in the map are service-specific.
@@ -119,6 +120,21 @@ func (s *service) GetEnemies() []Enemy {
 		enemies = append(enemies, enemy)
 	}
 	return enemies
+}
+
+func (s *service) GetDesign(id string) Blueprint {
+	q := "select id, name, next from design where id = ?"
+	var design Blueprint
+	row := s.db.QueryRow(q, id)
+	if err := row.Scan(&design.Id, &design.Name, &design.Next); err != nil {
+		if err == sql.ErrNoRows {
+			log.Printf("No Design found with id [%v]", id) // Log the error and terminate the program
+			return design
+		}
+		log.Printf("design ById %v: %v", id, err)
+		return design
+	}
+	return design
 }
 
 func New() Service {

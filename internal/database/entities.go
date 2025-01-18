@@ -1,5 +1,7 @@
 package database
 
+import "database/sql"
+
 type Weapon struct {
 	AttackSpeed float32 `json:"attackSpeed"`
 	Name        string  `json:"name"`
@@ -18,7 +20,10 @@ type Enemy struct {
 }
 
 type Blueprint struct {
-	Name         string        `json:"name"`
+	Name string        `json:"name"`
+	Id   int           `json:"id"`
+	Next sql.NullInt32 `json:"next"`
+	//TODO think about just using string map instead that should be ok,
 	Requirements []Requirement `json:"requirements"`
 }
 
