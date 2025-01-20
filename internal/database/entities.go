@@ -20,14 +20,14 @@ type Enemy struct {
 }
 
 type Blueprint struct {
-	Name string        `json:"name"`
-	Id   int           `json:"id"`
-	Next sql.NullInt32 `json:"next"`
-	//TODO think about just using string map instead that should be ok,
+	Name         string        `json:"name"`
 	Requirements []Requirement `json:"requirements"`
+	Id           int           `json:"id"`
+	Next         sql.NullInt32 `json:"next"`
 }
 
 type Requirement struct {
 	Name     string `json:"name"`
+	Id       int    `json:"id"`
 	Quantity int    `json:"quantity"`
 }

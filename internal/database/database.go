@@ -58,7 +58,7 @@ func (s *service) GetMaterial(materialId string) (name string, err error) {
 }
 
 func (s *service) GetDesignsForMaterial(materialId string) []dto.BuildRequirement {
-	q := `	SELECT design.name, quantity, design_id
+	q := `	SELECT design.name, design_id, quantity
 		FROM craft_requirement
 		INNER JOIN design ON design.id = design_id
 		WHERE material_id = ?`
@@ -101,7 +101,7 @@ func (s *service) GetDesigns() []dto.BuildBaseInfo {
 }
 
 func (s *service) GetRequirements(design string) []Requirement {
-	q := `SELECT material.name, quantity
+	q := `SELECT material.id, material.name, quantity
 		FROM craft_requirement
 		INNER JOIN design on design.id = design_id
 		INNER JOIN material on material.id = material_id
@@ -115,7 +115,7 @@ func (s *service) GetRequirements(design string) []Requirement {
 	defer rows.Close()
 	for rows.Next() {
 		var req Requirement
-		if err := rows.Scan(&req.Name, &req.Quantity); err != nil {
+		if err := rows.Scan(&req.Id, &req.Name, &req.Quantity); err != nil {
 			log.Printf("Failed Parsing requiremets row: %v", err) // Log the error and terminate the program
 			return requiremets
 		}

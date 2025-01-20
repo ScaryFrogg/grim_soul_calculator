@@ -11,7 +11,7 @@ type MaterialInfo struct {
 }
 
 type BuildRequirement struct {
-	Design   string `json:"Design"`
-	DesignId int    `json:"DesignId"`
-	Quantity int    `json:"Quantity"`
+	Design   string `json:"design"`
+	DesignId int    `json:"designId"`
+	Quantity int    `json:"quantity"`
 }
