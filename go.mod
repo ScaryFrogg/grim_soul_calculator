@@ -1,4 +1,4 @@
-module grim_soul_calculator
+module github.com/ScaryFrogg/grim_soul_calculator
 
 go 1.23.1
 

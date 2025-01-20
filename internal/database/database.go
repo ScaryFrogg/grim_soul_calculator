@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ScaryFrogg/grim_soul_calculator/internal/common"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -19,6 +20,8 @@ type Service interface {
 	GetEnemies() []Enemy
 	GetDesigns() []string
 	GetDesign(id string) Blueprint
+	GetMaterial(materialId string) (name string, err error)
+	GetDesignsForMaterial(materialId string) []dto.BuildRequirement
 	GetRequirements(design string) []Requirement
 	// Health returns a map of health status information.
 	// The keys and values in the map are service-specific.
@@ -38,19 +41,58 @@ var (
 	dbInstance *service
 )
 
+func (s *service) GetMaterial(materialId string) (name string, err error) {
+	q := `	SELECT name 
+		FROM material
+		WHERE id = ?`
+
+	row := s.db.QueryRow(q, materialId)
+	if err := row.Scan(&name); err != nil {
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("Not Found Material with id %v", materialId)
+		}
+		log.Printf("design ById %v: %v", materialId, err)
+		return "", fmt.Errorf("Failed QUERY")
+	}
+	return name, nil
+}
+
+func (s *service) GetDesignsForMaterial(materialId string) []dto.BuildRequirement {
+	q := `	SELECT design.name, quantity, design_id
+		FROM craft_requirement
+		INNER JOIN design ON design.id = design_id
+		WHERE material_id = ?`
+
+	requiremets := make([]dto.BuildRequirement, 0)
+	rows, err := s.db.Query(q, materialId)
+	if err != nil {
+		log.Printf("Getting  dati failed: %v", err)
+		return requiremets
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var req dto.BuildRequirement
+		if err := rows.Scan(&req.Design, &req.DesignId, &req.Quantity); err != nil {
+			log.Printf("Failed Parsing requiremets row: %v", err) // Log the error and terminate the program
+			return requiremets
+		}
+		requiremets = append(requiremets, req)
+	}
+	return requiremets
+}
 func (s *service) GetDesigns() []string {
 	q := "select name from design"
 	requiremets := make([]string, 0, 10)
 	rows, err := s.db.Query(q)
 	if err != nil {
-		log.Fatalf("Getting designs data failed: %v", err) // Log the error and terminate the program
+		log.Printf("Getting designs data failed: %v", err) // Log the error and terminate the program
 		return requiremets
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var name string
 		if err := rows.Scan(&name); err != nil {
-			log.Fatalf("Failed Parsing designgs row: %v", err) // Log the error and terminate the program
+			log.Printf("Failed Parsing designgs row: %v", err) // Log the error and terminate the program
 			return requiremets
 		}
 		requiremets = append(requiremets, name)
@@ -67,14 +109,14 @@ func (s *service) GetRequirements(design string) []Requirement {
 	requiremets := make([]Requirement, 0, 10)
 	rows, err := s.db.Query(q, design)
 	if err != nil {
-		log.Fatalf("Getting requirement data failed: %v", err) // Log the error and terminate the program
+		log.Printf("Getting requirement data failed: %v", err) // Log the error and terminate the program
 		return requiremets
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var req Requirement
 		if err := rows.Scan(&req.Name, &req.Quantity); err != nil {
-			log.Fatalf("Failed Parsing requiremets row: %v", err) // Log the error and terminate the program
+			log.Printf("Failed Parsing requiremets row: %v", err) // Log the error and terminate the program
 			return requiremets
 		}
 		requiremets = append(requiremets, req)
@@ -87,14 +129,14 @@ func (s *service) WeaponData() []Weapon {
 	weapons := make([]Weapon, 0, 32)
 	rows, err := s.db.Query(q)
 	if err != nil {
-		log.Fatalf("Getting weapons data failed: %v", err) // Log the error and terminate the program
+		log.Printf("Getting weapons data failed: %v", err) // Log the error and terminate the program
 		return weapons
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var weapon Weapon
 		if err := rows.Scan(&weapon.Name, &weapon.Damage, &weapon.AttackSpeed, &weapon.S1, &weapon.S2, &weapon.S3, &weapon.S4, &weapon.S5); err != nil {
-			log.Fatalf("Failed Parsing weapons row: %v", err) // Log the error and terminate the program
+			log.Printf("Failed Parsing weapons row: %v", err) // Log the error and terminate the program
 			return weapons
 		}
 		weapons = append(weapons, weapon)
@@ -107,14 +149,14 @@ func (s *service) GetEnemies() []Enemy {
 	enemies := make([]Enemy, 0, 200)
 	rows, err := s.db.Query(q)
 	if err != nil {
-		log.Fatalf("Getting enemies data failed: %v", err) // Log the error and terminate the program
+		log.Printf("Getting enemies data failed: %v", err) // Log the error and terminate the program
 		return enemies
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var enemy Enemy
 		if err := rows.Scan(&enemy.Name, &enemy.Health, &enemy.Armor); err != nil {
-			log.Fatalf("Failed Parsing enemies row: %v", err) // Log the error and terminate the program
+			log.Printf("Failed Parsing enemies row: %v", err) // Log the error and terminate the program
 			return enemies
 		}
 		enemies = append(enemies, enemy)
@@ -169,7 +211,7 @@ func (s *service) Health() map[string]string {
 	if err != nil {
 		stats["status"] = "down"
 		stats["error"] = fmt.Sprintf("db down: %v", err)
-		log.Fatalf("db down: %v", err) // Log the error and terminate the program
+		log.Printf("db down: %v", err) // Log the error and terminate the program
 		return stats
 	}
 

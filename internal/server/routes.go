@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/ScaryFrogg/grim_soul_calculator/internal/common"
 	"log"
 	"net/http"
 )
@@ -16,6 +17,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /weapons", s.WeaponDataHandler)
 	mux.HandleFunc("GET /designs", s.DesingnsHandler)
 	mux.HandleFunc("GET /design/{id}", s.GetBlueprintHandler)
+	mux.HandleFunc("GET /material/{id}", s.GetMaterialHandler)
 	mux.HandleFunc("GET /enemies", s.GetEnemiesHandeler)
 	mux.HandleFunc("GET /requirement/{id}", s.RequirementHandler)
 
@@ -65,6 +67,36 @@ func (s *Server) RequirementHandler(w http.ResponseWriter, r *http.Request) {
 	if _, err := w.Write(resp); err != nil {
 		log.Printf("Failed to write response: %v", err)
 	}
+}
+
+func (s *Server) GetMaterialHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if id == "0" {
+		http.Error(w, "Id cant be nil/0", http.StatusNotFound)
+		return
+	}
+	//get design
+	materialName, err := s.db.GetMaterial(id)
+	if err != nil {
+		http.Error(w, "Failed to marshal design data", http.StatusInternalServerError)
+		return
+	}
+
+	//get requirements
+	designs := s.db.GetDesignsForMaterial(id)
+	info := dto.MaterialInfo{Name: materialName, Designs: designs}
+
+	resp, err := json.Marshal(info)
+	if err != nil {
+		http.Error(w, "Failed to marshal design data", http.StatusInternalServerError)
+		return
+	}
+	//write response
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(resp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
+
 }
 
 func (s *Server) GetBlueprintHandler(w http.ResponseWriter, r *http.Request) {

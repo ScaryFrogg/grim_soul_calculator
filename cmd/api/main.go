@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"grim_soul_calculator/internal/server"
+	"github.com/ScaryFrogg/grim_soul_calculator/internal/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {

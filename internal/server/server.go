@@ -9,7 +9,7 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
-	"grim_soul_calculator/internal/database"
+	"github.com/ScaryFrogg/grim_soul_calculator/internal/database"
 )
 
 type Server struct {
