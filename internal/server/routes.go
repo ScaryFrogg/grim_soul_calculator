@@ -2,9 +2,11 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/ScaryFrogg/grim_soul_calculator/internal/common"
+	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/ScaryFrogg/grim_soul_calculator/internal/common"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
@@ -78,12 +80,13 @@ func (s *Server) GetMaterialHandler(w http.ResponseWriter, r *http.Request) {
 	//get design
 	materialName, err := s.db.GetMaterial(id)
 	if err != nil {
-		http.Error(w, "Failed to marshal design data", http.StatusInternalServerError)
+		fmt.Printf("Failed to get material with Id [%v] design data-> error %v", id, err)
 		return
 	}
 
 	//get requirements
 	designs := s.db.GetDesignsForMaterial(id)
+	w.Header().Set("Content-Type", "application/json")
 	info := dto.MaterialInfo{Name: materialName, Designs: designs}
 
 	resp, err := json.Marshal(info)
@@ -92,7 +95,6 @@ func (s *Server) GetMaterialHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//write response
-	w.Header().Set("Content-Type", "application/json")
 	if _, err := w.Write(resp); err != nil {
 		log.Printf("Failed to write response: %v", err)
 	}

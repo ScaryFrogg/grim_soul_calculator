@@ -18,7 +18,7 @@ import (
 type Service interface {
 	WeaponData() []Weapon
 	GetEnemies() []Enemy
-	GetDesigns() []string
+	GetDesigns() []dto.BuildBaseInfo
 	GetDesign(id string) Blueprint
 	GetMaterial(materialId string) (name string, err error)
 	GetDesignsForMaterial(materialId string) []dto.BuildRequirement
@@ -80,9 +80,9 @@ func (s *service) GetDesignsForMaterial(materialId string) []dto.BuildRequiremen
 	}
 	return requiremets
 }
-func (s *service) GetDesigns() []string {
-	q := "select name from design"
-	requiremets := make([]string, 0, 10)
+func (s *service) GetDesigns() []dto.BuildBaseInfo {
+	q := "select name, id from design"
+	requiremets := make([]dto.BuildBaseInfo, 0)
 	rows, err := s.db.Query(q)
 	if err != nil {
 		log.Printf("Getting designs data failed: %v", err) // Log the error and terminate the program
@@ -90,12 +90,12 @@ func (s *service) GetDesigns() []string {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
+		var info dto.BuildBaseInfo
+		if err := rows.Scan(&info.Name, &info.Id); err != nil {
 			log.Printf("Failed Parsing designgs row: %v", err) // Log the error and terminate the program
 			return requiremets
 		}
-		requiremets = append(requiremets, name)
+		requiremets = append(requiremets, info)
 	}
 	return requiremets
 }
