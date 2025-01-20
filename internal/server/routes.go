@@ -11,7 +11,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
 
 	// Register routes
-	mux.HandleFunc("/", s.HelloWorldHandler)
 
 	mux.HandleFunc("GET /health", s.healthHandler)
 	mux.HandleFunc("GET /weapons", s.WeaponDataHandler)
@@ -21,6 +20,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /enemies", s.GetEnemiesHandeler)
 	mux.HandleFunc("GET /requirement/{id}", s.RequirementHandler)
 
+	staticDir := "static"
+	mux.Handle("/", http.FileServer(http.Dir(staticDir)))
+
+	// Register the catch-all route last
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)
 }
