@@ -7,6 +7,7 @@ import BuildListView from '../views/BuildListView.vue'
 const routes = [
   { path: '/', component: DesignsView },
   { path: '/design/:id', component: DesignView },
+  { path: '/designs', component: DesignsView },
   { path: '/material/:id', component: MaterialView },
   { path: '/buildList/', component: BuildListView },
 ]
