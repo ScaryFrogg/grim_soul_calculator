@@ -20,8 +20,8 @@ type Service interface {
 	GetEnemies() []Enemy
 	GetDesigns() []dto.BuildBaseInfo
 	GetDesign(id string) Blueprint
-	GetMaterial(materialId string) (name string, err error)
-	GetDesignsForMaterial(materialId string) []dto.BuildRequirement
+	GetItem(materialId string) (name string, err error)
+	GetDesignsForItem(materialId string) []dto.BuildRequirement
 	GetRequirements(design string) []Requirement
 	// Health returns a map of health status information.
 	// The keys and values in the map are service-specific.
@@ -43,7 +43,7 @@ var (
 
 func (s *service) GetMaterial(materialId string) (name string, err error) {
 	q := `	SELECT name 
-		FROM material
+		FROM item
 		WHERE id = ?`
 
 	row := s.db.QueryRow(q, materialId)
@@ -101,10 +101,10 @@ func (s *service) GetDesigns() []dto.BuildBaseInfo {
 }
 
 func (s *service) GetRequirements(design string) []Requirement {
-	q := `SELECT material.id, material.name, quantity
+	q := `SELECT item.id, item.name, quantity
 		FROM craft_requirement
 		INNER JOIN design on design.id = design_id
-		INNER JOIN material on material.id = material_id
+		INNER JOIN item on item.id = item_id
 		where design.id = ?`
 	requiremets := make([]Requirement, 0, 10)
 	rows, err := s.db.Query(q, design)
