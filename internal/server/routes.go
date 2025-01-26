@@ -46,11 +46,21 @@ func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 }
 
 func (s *Server) TradesHandler(w http.ResponseWriter, r *http.Request) {
+	resp, err := json.Marshal(s.db.GetTrades())
+	if err != nil {
+		http.Error(w, "Failed to marshal trades data", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(resp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
 }
+
 func (s *Server) DesingnsHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := json.Marshal(s.db.GetDesigns())
 	if err != nil {
-		http.Error(w, "Failed to marshal weapon data", http.StatusInternalServerError)
+		http.Error(w, "Failed to marshal designs data", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -88,7 +98,7 @@ func (s *Server) GetItemHandler(w http.ResponseWriter, r *http.Request) {
 	//get requirements
 	designs := s.db.GetDesignsForItem(id)
 	w.Header().Set("Content-Type", "application/json")
-	info := dto.MaterialInfo{Name: materialName, Designs: designs}
+	info := types.MaterialInfo{Name: materialName, Designs: designs}
 
 	resp, err := json.Marshal(info)
 	if err != nil {
