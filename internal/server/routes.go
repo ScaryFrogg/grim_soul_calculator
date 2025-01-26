@@ -20,6 +20,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /item/{id}", s.GetItemHandler)
 	mux.HandleFunc("GET /enemies", s.GetEnemiesHandeler)
 	mux.HandleFunc("GET /requirement/{id}", s.RequirementHandler)
+	mux.HandleFunc("GET /trades", s.TradesHandler)
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)
@@ -44,6 +45,8 @@ func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func (s *Server) TradesHandler(w http.ResponseWriter, r *http.Request) {
+}
 func (s *Server) DesingnsHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := json.Marshal(s.db.GetDesigns())
 	if err != nil {
