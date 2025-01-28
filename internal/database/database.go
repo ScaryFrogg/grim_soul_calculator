@@ -20,6 +20,7 @@ type Service interface {
 	GetEnemies() []types.Enemy
 	GetDesigns() []types.BuildBaseInfo
 	GetTrades() []types.Trade
+	GetTradesForItem(id string) []types.Trade
 	GetDesign(id string) types.Blueprint
 	GetItem(materialId string) (name string, err error)
 	GetDesignsForItem(materialId string) []types.BuildRequirement
@@ -38,18 +39,41 @@ type service struct {
 }
 
 var (
-	dburl      = os.Getenv("BLUEPRINT_DB_URL")
+	dburl      string
 	dbInstance *service
 )
 
 func (s *service) GetTrades() []types.Trade {
-
 	q := `SELECT give_quantity, give.name, get_quantity, get.name FROM trade
 		INNER JOIN item give ON give_id = give.id
 		INNER JOIN item get ON get_id = get.id`
 
 	trades := make([]types.Trade, 0)
 	rows, err := s.db.Query(q)
+	if err != nil {
+		log.Printf("Getting trades data failed: %v", err)
+		return trades
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var req types.Trade
+		if err := rows.Scan(&req.GiveQuantity, &req.GiveName, &req.GetQuantity, &req.GetName); err != nil {
+			log.Printf("Failed Parsing trades row: %v", err)
+			return trades
+		}
+		trades = append(trades, req)
+	}
+	return trades
+}
+
+func (s *service) GetTradesForItem(id string) []types.Trade {
+	q := `SELECT give_quantity, give.name, get_quantity, get.name FROM trade
+		INNER JOIN item give ON give_id = give.id
+		INNER JOIN item get ON get_id = get.id
+		WHERE give_id = ? OR get_id = ?`
+
+	trades := make([]types.Trade, 0)
+	rows, err := s.db.Query(q, id, id)
 	if err != nil {
 		log.Printf("Getting trades data failed: %v", err)
 		return trades
@@ -129,7 +153,7 @@ func (s *service) GetRequirements(design string) []types.Requirement {
 	q := `SELECT item.id, item.name, quantity
 		FROM craft_requirement
 		INNER JOIN design on design.id = design_id
-		INNER JOIN item on item.id = item_id
+		INNER JOIN item on item.id = material_id
 		where design.id = ?`
 	requiremets := make([]types.Requirement, 0, 10)
 	rows, err := s.db.Query(q, design)
@@ -205,11 +229,13 @@ func (s *service) GetDesign(id string) types.Blueprint {
 }
 
 func New() Service {
-	// Reuse Connection
+	dburl = os.Getenv("BLUEPRINT_DB_URL") // Reuse Connection
+	if dburl == "" {
+		log.Fatal("missing BLUEPRINT_DB_URL environment variable")
+	}
 	if dbInstance != nil {
 		return dbInstance
 	}
-
 	db, err := sql.Open("sqlite3", dburl)
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
