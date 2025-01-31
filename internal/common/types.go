@@ -35,6 +35,8 @@ type Requirement struct {
 type Trade struct {
 	GiveName     string `json:"giveName"`
 	GetName      string `json:"getName"`
+	GiveId       int    `json:"giveId"`
+	GetId        int    `json:"getId"`
 	GiveQuantity int    `json:"giveQuantity"`
 	GetQuantity  int    `json:"getQuantity"`
 }

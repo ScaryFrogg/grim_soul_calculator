@@ -26,6 +26,11 @@ const items = ref([
         url: '/designs',
       },
       {
+        label: 'Trades',
+        url: '/trades',
+      },
+
+      {
         label: 'Materials',
         url: '/materials',
       },

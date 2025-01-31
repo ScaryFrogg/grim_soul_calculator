@@ -44,7 +44,7 @@ var (
 )
 
 func (s *service) GetTrades() []types.Trade {
-	q := `SELECT give_quantity, give.name, get_quantity, get.name FROM trade
+	q := `SELECT give_id, give_quantity, give.name, get_id, get_quantity, get.name FROM trade
 		INNER JOIN item give ON give_id = give.id
 		INNER JOIN item get ON get_id = get.id`
 
@@ -57,7 +57,7 @@ func (s *service) GetTrades() []types.Trade {
 	defer rows.Close()
 	for rows.Next() {
 		var req types.Trade
-		if err := rows.Scan(&req.GiveQuantity, &req.GiveName, &req.GetQuantity, &req.GetName); err != nil {
+		if err := rows.Scan(&req.GiveId, &req.GiveQuantity, &req.GiveName, &req.GetId, &req.GetQuantity, &req.GetName); err != nil {
 			log.Printf("Failed Parsing trades row: %v", err)
 			return trades
 		}
