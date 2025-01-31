@@ -36,35 +36,46 @@ func TestMain(m *testing.M) {
 	s := setupServer()
 
 	mux := s.RegisterRoutes()
-	server = httptest.NewServer(mux) // Use mux, not HandlerFunc
+	server = httptest.NewServer(mux)
 	defer server.Close()
 
 	code := m.Run()
 	os.Exit(code)
 }
 
-const (
-	expectedDesign = "weapon shelf lvl2"
-)
+func TestDesigns(t *testing.T) {
+	var result []types.BuildBaseInfo
+	RequestAndParseResponse(t, "/designs", &result)
+
+	if len(result) == 0 {
+		t.Log("expected to find designs")
+	}
+
+}
+
+func TestRequirementById(t *testing.T) {
+	var result []types.Requirement
+	RequestAndParseResponse(t, "/requirement/1", &result)
+
+	if len(result) == 0 {
+		t.Log("expected to find requirements")
+	}
+
+}
+
+func TestItemById(t *testing.T) {
+	expectedName := "candle"
+	var result types.MaterialInfo
+	RequestAndParseResponse(t, "/item/1", &result)
+
+	if result.Name != expectedName {
+		t.Fatalf("expected Name to be %v; got %v\n", expectedName, result.Name)
+	}
+}
 
 func TestTrades(t *testing.T) {
-	// Make a test request
-	resp, err := http.Get(server.URL + "/trades")
-	if err != nil {
-		t.Fatalf("error making request to server. Err: %v\n", err)
-	}
-	defer resp.Body.Close()
-
-	// Assertions
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status OK; got %v\n", resp.Status)
-	}
-
 	var result []types.Trade
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		t.Fatalf("error decoding response body. Err: %v\n", err)
-	}
+	RequestAndParseResponse(t, "/trades", &result)
 	if len(result) == 0 {
 		t.Log("expected to find trades")
 	}
@@ -73,14 +84,34 @@ func TestTrades(t *testing.T) {
 }
 
 func TestGetItemHandler(t *testing.T) {
-	// Make a test request
-	resp, err := http.Get(server.URL + "/design/1")
+	expectedDesign := "weapon shelf lvl2"
+	var result types.Blueprint
+	RequestAndParseResponse(t, "/design/1", &result)
+
+	if result.Name != expectedDesign {
+		t.Fatalf("expected Name to be %v; got %v\n", expectedDesign, result.Name)
+	}
+}
+
+func TestTradesForItem(t *testing.T) {
+	expected := "alchemical gold"
+	var response []types.Trade
+	RequestAndParseResponse(t, "/trades/69", &response)
+	if response == nil || len(response) == 0 {
+		t.Fatal("No Trades found for item id 69")
+	}
+	if response[1].GetName != expected {
+		t.Fatalf("expected Name to be %v; got %v\n", expected, response[1].GetName)
+	}
+}
+
+func RequestAndParseResponse(t *testing.T, path string, result interface{}) {
+	resp, err := http.Get(server.URL + path)
 	if err != nil {
 		t.Fatalf("error making request to server. Err: %v\n", err)
 	}
 	defer resp.Body.Close()
 
-	// Assertions
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("expected status OK; got %v\n", resp.Status)
 	}
@@ -88,12 +119,8 @@ func TestGetItemHandler(t *testing.T) {
 	bodyBytes, _ := io.ReadAll(resp.Body)
 	fmt.Printf("Raw Response: %s\n", string(bodyBytes))
 
-	var result types.Blueprint
-	parseErr := json.Unmarshal(bodyBytes, &result) // Use json.Unmarshal instead of decoding from resp.Body
+	parseErr := json.Unmarshal(bodyBytes, &result)
 	if parseErr != nil {
 		t.Fatalf("Error decoding response body. Err: %v\n", parseErr)
-	}
-	if result.Name != expectedDesign {
-		t.Fatalf("expected Name to be %v; got %v\n", expectedDesign, result.Name)
 	}
 }
