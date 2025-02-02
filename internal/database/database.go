@@ -174,7 +174,7 @@ func (s *service) GetRequirements(design string) []types.Requirement {
 }
 
 func (s *service) WeaponData() []types.Weapon {
-	q := "SELECT name, damage, attack_speed as attackSpeed, s1,s2,s3,s4,s5 FROM weapon INNER JOIN sharpen ON weapon.id = sharpen.weapon_id"
+	q := "SELECT name, damage, attack_speed as attackSpeed, s1,s2,s3,s4,s5 FROM weapon LEFT JOIN sharpen ON weapon.id = sharpen.weapon_id"
 	weapons := make([]types.Weapon, 0, 32)
 	rows, err := s.db.Query(q)
 	if err != nil {

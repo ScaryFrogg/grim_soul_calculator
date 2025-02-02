@@ -3,7 +3,6 @@ export interface Requirement {
 	name: string;
 	quantity: number;
 }
-
 export interface Design {
 	name: string
 	id: number
@@ -25,4 +24,14 @@ export interface DesignRequirement {
 	design: string
 	designId: number
 	quantity: number
+}
+export interface WeaponInfo {
+	attackSpeed: number
+	name: string
+	damage: number
+	s1: number | null
+	s2: number | null
+	s3: number | null
+	s4: number | null
+	s5: number | null
 }

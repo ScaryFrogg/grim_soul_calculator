@@ -3,14 +3,14 @@ package types
 import "database/sql"
 
 type Weapon struct {
-	AttackSpeed float32       `json:"attackSpeed"`
-	Name        string        `json:"name"`
-	Damage      int           `json:"damage"`
-	S1          sql.NullInt32 `json:"s1"`
-	S2          sql.NullInt32 `json:"s2"`
-	S3          sql.NullInt32 `json:"s3"`
-	S4          sql.NullInt32 `json:"s4"`
-	S5          sql.NullInt32 `json:"s5"`
+	AttackSpeed float32 `json:"attackSpeed"`
+	Name        string  `json:"name"`
+	Damage      int     `json:"damage"`
+	S1          *int32  `json:"s1,omitempty"`
+	S2          *int32  `json:"s2,omitempty"`
+	S3          *int32  `json:"s3,omitempty"`
+	S4          *int32  `json:"s4,omitempty"`
+	S5          *int32  `json:"s5,omitempty"`
 }
 
 type Enemy struct {

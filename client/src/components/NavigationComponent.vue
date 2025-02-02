@@ -41,10 +41,10 @@ const items = ref([
         label: 'Weapons',
         url: '/weapons',
       },
-      {
+      /* {
         label: 'Grindstone',
         url: '/grindstone',
-      },
+      }, */
       {
         label: 'Enemies',
         url: '/enemies',
