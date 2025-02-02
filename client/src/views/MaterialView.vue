@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
+import type { MaterialInfo, Trade } from "@/types"
+
 const route = useRoute()
-const material = ref(null)
-const trades = ref([])
+const material = ref<MaterialInfo | null>(null)
+const trades = ref<Trade[]>([])
 
 onMounted(() => {
   const id = route.params.id
