@@ -103,7 +103,6 @@ const removeDesign = (design: Design) => {
 }
 
 #designs-container>div {
-  background-color: #f9f9f9;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -124,7 +123,6 @@ const removeDesign = (design: Design) => {
 #selected-designs-container,
 #requirements-container {
   flex: 1;
-  background-color: #fff;
   padding: 10px;
   overflow-y: auto;
   border: 1px solid #ccc;

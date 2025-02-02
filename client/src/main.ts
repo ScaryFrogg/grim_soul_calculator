@@ -9,6 +9,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import Button from "primevue/button"
+import Card from "primevue/card"
 
 
 const app = createApp(App);
@@ -18,6 +19,7 @@ app.use(PrimeVue);
 
 //PrimeVue reused stuff //TODO extract later
 app.component('Button', Button);
+app.component('Card', Card);
 app.directive("ripple", Ripple)
 
 
