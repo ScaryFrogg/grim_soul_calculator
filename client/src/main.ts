@@ -10,6 +10,9 @@ import App from './App.vue'
 import router from './router'
 import Button from "primevue/button"
 import Card from "primevue/card"
+import DataTable from "primevue/datatable"
+import Column from "primevue/column"
+
 
 
 const app = createApp(App);
@@ -20,6 +23,9 @@ app.use(PrimeVue);
 //PrimeVue reused stuff //TODO extract later
 app.component('Button', Button);
 app.component('Card', Card);
+app.component('DataTable', DataTable);
+app.component('Column', Column);
+
 app.directive("ripple", Ripple)
 
 
