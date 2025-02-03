@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
+import HomeView from "../views/HomeView.vue"
 import DesignsView from "../views/DesignsView.vue"
 import DesignView from "../views/DesignView.vue"
 import MaterialView from "../views/MaterialView.vue"
@@ -7,13 +8,13 @@ import TradesView from "../views/TradesView.vue"
 import WeaponsView from "../views/WeaponsView.vue"
 
 const routes = [
-  { path: "/", component: DesignsView },
+  { path: "/", component: HomeView },
   { path: "/design/:id", component: DesignView },
   { path: "/designs", component: DesignsView },
   { path: "/material/:id", component: MaterialView },
   { path: "/buildList/", component: BuildListView },
-  { path: "/trades/", component: TradesView },
-  { path: "/weapons/", component: WeaponsView },
+  { path: "/trades", component: TradesView },
+  { path: "/weapons", component: WeaponsView },
 ]
 
 

@@ -21,15 +21,16 @@ onMounted(() => {
 
 </script>
 <template>
-  <div class="flex justify-content-center" style="max-width: 100vw;">
+  <div class="flex flex-column" style="max-width: 100vw;">
+    <h2 class="text-center">Weapons</h2>
     <DataTable size="small" :filters="filters" :value="weapons" tableStyle="max-width: 100vw; width: 50rem"
-      :globalFilterFields="['name', 'damage']" removableSort>
+      :globalFilterFields="['name', 'damage']" removableSort stripedRows :pt="{ root: { 'style': 'overflow:scroll' } }">
       <template #header>
         <div class="flex justify-content-center">
           <InputText v-model="filters['global'].value" placeholder="Search" />
         </div>
       </template>
-      <Column field="name" header="Weapon" sortable headerClass="px-1 md:px-5" bodyClass="px-0 md:px-5"></Column>
+      <Column field="name" header="Weapon" sortable headerClass="px-1 md:px-5" bodyClass="px-1 md:px-5"></Column>
       <Column field="damage" header="Dmg" sortable headerClass="px-1 md:px-5" bodyClass="px-0 md:px-5"></Column>
       <Column field="attackSpeed" header="AS" sortable headerClass="px-1 md:px-5" bodyClass="px-0 md:px-5"></Column>
       <Column field="s1" header="s+1" sortable headerClass="px-1 md:px-5" bodyClass="px-0 md:px-5"></Column>

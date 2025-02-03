@@ -13,7 +13,6 @@ fetch(`http://localhost:3000/designs`)
 
 const getRequirements = async (design: Design) => {
   const data = await fetchRequirements(design.id)
-  console.log(data)
   if (!data) return
   data.forEach((req: Requirement) => {
     if (req.name in requirements.value) {
@@ -70,6 +69,8 @@ const removeDesign = (design: Design) => {
     </div>
     <div id="wrapperr">
       <div id="selected-designs-container">
+        <p class="m-0">Selected</p>
+
         <div v-for="(pair, i) in selectedDesigns" :key=i>
           <div>{{ pair.design.name }} :: {{ pair.count }} :: <div @click="removeDesign(pair.design)">-</div>
           </div>
@@ -77,6 +78,7 @@ const removeDesign = (design: Design) => {
       </div>
 
       <div id="requirements-container">
+        <p class="m-0 m-b-1">Total Materials</p>
         <div v-for="(i, f) in requirements" :key=f>
           <div>{{ f }}{{ i }}</div>
         </div>
@@ -105,7 +107,6 @@ const removeDesign = (design: Design) => {
 #designs-container>div {
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 5px;
   flex: 1 1 calc(25% - 20px);
   box-sizing: border-box;
   text-align: center;

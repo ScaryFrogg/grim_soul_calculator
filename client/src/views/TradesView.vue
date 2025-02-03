@@ -27,10 +27,10 @@ const navigate = (whereTo: number | undefined) => {
 }
 </script>
 <template>
-  <h2>Trades</h2>
-  <div class="flex justify-content-center">
+  <div class="flex flex-column">
+    <h2>Trades</h2>
     <DataTable :value="trades" tableStyle="max-width: 100vw; width: 50rem" removableSort :filters="filters"
-      :globalFilterFields="['giveName', 'getName']" stripedRows>
+      :globalFilterFields="['giveName', 'getName']" stripedRows :pt="{ root: { 'style': 'overflow:scroll' } }">
       <template #header>
         <div class="flex justify-content-center">
           <InputText v-model="filters['global'].value" placeholder="Search" />
