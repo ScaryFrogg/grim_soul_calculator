@@ -1,96 +1,70 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import Listbox from "primevue/listbox"
+import { ref, watchEffect } from "vue"
 import type { Design, Requirement } from "@/types"
+const fetchedRequirements = new Map<number, Requirement[]>()
 
+const test = ref<Design[]>([]);
 const designs = ref<Design[]>([]);
 const requirements = ref<Record<string, number>>({});
-const selectedDesigns = ref<Record<number, { design: Design; count: number }>>({});
 fetch(`http://localhost:3000/designs`)
   .then(d => d.json().then(data => {
     designs.value = data
   }))
   .catch(e => console.error(e))
 
-const getRequirements = async (design: Design) => {
-  const data = await fetchRequirements(design.id)
-  if (!data) return
-  data.forEach((req: Requirement) => {
-    if (req.name in requirements.value) {
-      requirements.value[req.name] = requirements.value[req.name] + req.quantity
-    }
-    else {
-      requirements.value[req.name] = req.quantity
-    }
-  })
-  design.requirements = data
-  addDesign(design)
+watchEffect(async () => {
+  for (let design of test.value) {
+    const reqs = await getReq(design.id)
+    if (!reqs) return
+    reqs.forEach((req: Requirement) => {
+      if (req.name in requirements.value) {
+        requirements.value[req.name] = requirements.value[req.name] + req.quantity
+      }
+      else {
+        requirements.value[req.name] = req.quantity
+      }
+    })
+  }
+})
+const getReq = async (planId: number) => {
+  if (!fetchedRequirements.has(planId)) {
+    const reqs = await fetchRequirements(planId)
+    fetchedRequirements.set(planId, reqs)
+  }
+  return fetchedRequirements.get(planId)
 }
-
-const fetchRequirements = async (planId: number): Promise<Requirement[] | null> => {
+const fetchRequirements = async (planId: number): Promise<Requirement[]> => {
   return fetch(`http://localhost:3000/requirement/${planId}`)
     .then(d => d.json().then((data: Requirement[]) => {
       return data
     }))
     .catch(e => {
       console.error(e)
-      return null
+      return []
     })
 }
 
-const addDesign = (design: Design) => {
-  if (selectedDesigns.value[design.id]) {
-    selectedDesigns.value[design.id].count++;
-  } else {
-    selectedDesigns.value[design.id] = { design, count: 1 };
-  }
-};
-
-const removeDesign = (design: Design) => {
-  if (selectedDesigns.value[design.id].count != 1) {
-    selectedDesigns.value[design.id].count--;
-  } else {
-    delete selectedDesigns.value[design.id];
-  }
-  design.requirements.forEach(req => {
-    requirements.value[req.name] = requirements.value[req.name] - req.quantity
-    if (requirements.value[req.name] == 0) {
-      delete requirements.value[req.name];
-    }
-  });
-};
-
 </script>
 <template>
-  <div id="build-list">
-    <div id="designs-container">
-      <div v-for="(design, i) in designs" :key=i>
-        <div @click="getRequirements(design)">{{ design.name }}</div>
-      </div>
-    </div>
-    <div id="wrapperr">
-      <div id="selected-designs-container">
-        <p class="m-0">Selected</p>
-
-        <div v-for="(pair, i) in selectedDesigns" :key=i>
-          <div>{{ pair.design.name }} :: {{ pair.count }} :: <div @click="removeDesign(pair.design)">-</div>
-          </div>
+  <div class="flex flex-column align-items-center w-full" id="build-list">
+    <p>Select Designs to Build</p>
+    <Listbox v-model="test" :options="designs" filter optionLabel="name" class="w-9 md:w-5"
+      listStyle="height:250px; text-align:center" striped multiple />
+    <p>Total Materials</p>
+    <Listbox :options="Object.keys(requirements)" class="w-9 md:w-5" listStyle="height:250px" striped>
+      <template #option="row">
+        <div class="flex justify-content-between">
+          <span>{{ row.option }}</span>
+          <span>{{ requirements[row.option] }}</span>
         </div>
-      </div>
 
-      <div id="requirements-container">
-        <p class="m-0 m-b-1">Total Materials</p>
-        <div v-for="(i, f) in requirements" :key=f>
-          <div>{{ f }}{{ i }}</div>
-        </div>
-      </div>
-    </div>
+      </template>
+    </Listbox>
   </div>
 </template>
 <style scoped>
 #build-list {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
   height: 100vh;
 }
 
@@ -126,7 +100,11 @@ const removeDesign = (design: Design) => {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
-  border: 1px solid #ccc;
   box-sizing: border-box;
+}
+
+#selected-designs-container>div,
+#requirements-container>div {
+  border: 1px solid #ccc;
 }
 </style>
