@@ -14,6 +14,8 @@ fetch(`http://localhost:3000/designs`)
   .catch(e => console.error(e))
 
 watchEffect(async () => {
+  console.log(test.value)
+  requirements.value = {}
   for (let design of test.value) {
     const reqs = await getReq(design.id)
     if (!reqs) return
