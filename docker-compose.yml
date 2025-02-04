@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: vue_frontend
+    restart: always
+    ports:
+      - "3000:80"  # Vue will be available on port 3000 inside Docker
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go_backend
+    restart: always
+    ports:
+      - "8080:8080"  # Go API will be available on port 8080
+
