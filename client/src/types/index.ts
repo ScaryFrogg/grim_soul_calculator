@@ -1,3 +1,6 @@
+export interface Api {
+	get: (url: string) => Promise<any>;
+}
 export interface Requirement {
 	id: number
 	name: string;

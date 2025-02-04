@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, inject } from "vue"
 import { useRouter } from "vue-router"
-import type { Trade } from "@/types"
+import type { Api, Trade } from "@/types"
 import InputText from "primevue/inputtext"
 import { FilterMatchMode } from "primevue/api";
+const api = inject<Api>("api")
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const router = useRouter()
 const trades = ref<Trade[]>([])
 
-const apiRoot = "http://localhost:3000/"
 onMounted(() => {
-  fetch(`${apiRoot}trades/`)
-    .then(d => d.json().then(data => {
+  api?.get("trades/")
+    .then(data => {
       trades.value = data
-    }))
+    })
     .catch(e => console.error(e))
 })
 const navigate = (whereTo: number | undefined) => {

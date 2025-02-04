@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
-import type { WeaponInfo } from "@/types"
+import { onMounted, ref, inject } from "vue"
+import type { Api, WeaponInfo } from "@/types"
 import InputText from "primevue/inputtext"
 import { FilterMatchMode } from "primevue/api";
+const api = inject<Api>("api")
 const weapons = ref<WeaponInfo[]>([])
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const apiRoot = "http://localhost:3000/"
 onMounted(() => {
-  fetch(`${apiRoot}weapons`)
-    .then(d => d.json().then(data => {
+  api?.get("weapons")
+    .then(data => {
       weapons.value = data
-    }))
+    })
     .catch(e => console.error(e))
 })
 

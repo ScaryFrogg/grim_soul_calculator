@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, inject } from "vue"
 import { useRoute } from "vue-router"
-import type { Design } from "@/types"
+import type { Api, Design } from "@/types"
+const api = inject<Api>("api")
 const route = useRoute()
 const design = ref<Design | null>(null)
 onMounted(() => {
   const id = route.params.id
-  fetch(`http://localhost:3000/design/${id}`)
-    .then(d => d.json().then(data => {
+  api?.get(`design/${id}`)
+    .then(data => {
       design.value = data
-    }))
+    })
     .catch(e => console.error(e))
 
 })

@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, inject } from "vue"
 import { useRoute } from "vue-router"
-import type { MaterialInfo, Trade } from "@/types"
+import type { Api, MaterialInfo, Trade } from "@/types"
 
 const route = useRoute()
 const material = ref<MaterialInfo | null>(null)
 const trades = ref<Trade[]>([])
+const api = inject<Api>("api")
 
 onMounted(() => {
   const id = route.params.id
-  fetch(`http://localhost:3000/item/${id}`)
-    .then(d => d.json().then(data => {
+  api?.get(`item/${id}`)
+    .then(data => {
       material.value = data
-    }))
+    })
     .catch(e => console.error(e))
 
-  fetch(`http://localhost:3000/trades/${id}`)
-    .then(d => d.json().then(data => {
+  api?.get(`trades/${id}`)
+    .then(data => {
       trades.value = data
-    }))
+    })
     .catch(e => console.error(e))
 })
 

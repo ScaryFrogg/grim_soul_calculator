@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, inject } from "vue"
 import type { Ref } from "vue"
-import type { Design } from "@/types"
+import type { Api, Design } from "@/types"
 import { useRouter } from "vue-router"
 import Listbox from "primevue/listbox"
+const api = inject<Api>("api")
 const router = useRouter()
 
 const designs: Ref<Design[]> = ref([])
-fetch(`http://localhost:3000/designs`)
-  .then(d => d.json().then(data => {
+api?.get("designs")
+  .then(data => {
     designs.value = data
-  }))
+  })
   .catch(e => console.error(e))
 
 const navigate = (whereTo: Design) => {
