@@ -14,6 +14,7 @@ const items = ref([
   { label: 'Crafting List', url: '/buildList', },
   { label: 'Designs', url: '/designs', },
   { label: 'Trades', url: '/trades', },
+  { label: 'Cook', url: '/cook', },
   { label: 'Weapons', url: '/weapons', }
 ]);
 

@@ -19,6 +19,9 @@
             <RouterLink to="/designs">Designs</RouterLink>
           </li>
           <li>
+            <RouterLink to="/cook">Cook Recipes</RouterLink>
+          </li>
+          <li>
             <RouterLink to="/items">Items</RouterLink>
           </li>
         </ul>

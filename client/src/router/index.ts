@@ -6,6 +6,7 @@ import MaterialView from "../views/MaterialView.vue"
 import BuildListView from "../views/BuildListView.vue"
 import TradesView from "../views/TradesView.vue"
 import WeaponsView from "../views/WeaponsView.vue"
+import CookView from "../views/CookView.vue"
 
 const routes = [
   { path: "/", component: HomeView },
@@ -15,6 +16,7 @@ const routes = [
   { path: "/buildList/", component: BuildListView },
   { path: "/trades", component: TradesView },
   { path: "/weapons", component: WeaponsView },
+  { path: "/cook", component: CookView },
 ]
 
 

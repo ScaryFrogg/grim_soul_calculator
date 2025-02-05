@@ -38,3 +38,11 @@ export interface WeaponInfo {
 	s4: number | null
 	s5: number | null
 }
+export interface Recipe {
+	ing1: string
+	ing2: string | null
+	result: string
+	ing1Quantity: number
+	ing2Quantity: number | null
+	resultQuantity: number
+}

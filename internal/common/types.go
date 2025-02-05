@@ -63,10 +63,10 @@ type TradeForItem struct {
 }
 
 type Recipe struct {
-	Ing1           string `json:"ing1"`
-	Ing2           string `json:"ing2"`
-	Result         string `json:"result"`
-	Ing1Quantity   int    `json:"ing1Quantity"`
-	Ing2Quantity   int    `json:"ing2Quantity"`
-	ResultQuantity int    `json:"resultQuantity"`
+	Ing1           string  `json:"ing1"`
+	Ing2           *string `json:"ing2,omitempty"`
+	Result         string  `json:"result"`
+	Ing1Quantity   int     `json:"ing1Quantity"`
+	Ing2Quantity   *int    `json:"ing2Quantity,omitempty"`
+	ResultQuantity int     `json:"resultQuantity"`
 }
