@@ -53,6 +53,16 @@ func TestDesigns(t *testing.T) {
 
 }
 
+func TestCook(t *testing.T) {
+	var result []types.Recipe
+	RequestAndParseResponse(t, "/cook", &result)
+
+	if len(result) == 0 {
+		t.Log("expected to find designs")
+	}
+
+}
+
 func TestRequirementById(t *testing.T) {
 	var result []types.Requirement
 	RequestAndParseResponse(t, "/requirement/1", &result)

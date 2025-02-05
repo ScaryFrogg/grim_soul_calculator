@@ -71,3 +71,7 @@ func (s *Server) WeaponDataHandler(w http.ResponseWriter, r *http.Request) {
 func (s *Server) GetEnemiesHandeler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetEnemies(), http.StatusOK)
 }
+
+func (s *Server) CookHandler(w http.ResponseWriter, r *http.Request) {
+	writeJSONResponse(w, s.db.GetCookData(), http.StatusOK)
+}

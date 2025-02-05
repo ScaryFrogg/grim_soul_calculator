@@ -12,7 +12,7 @@ const router = useRouter()
 const trades = ref<Trade[]>([])
 
 onMounted(() => {
-  api?.get("trades/")
+  api?.get("trades")
     .then(data => {
       trades.value = data
     })

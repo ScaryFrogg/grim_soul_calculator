@@ -25,6 +25,7 @@ type Service interface {
 	GetItem(materialId string) (name string, err error)
 	GetDesignsForItem(materialId string) []types.BuildRequirement
 	GetRequirements(design string) []types.Requirement
+	GetCookData() []types.Recipe
 	// Health returns a map of health status information.
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
@@ -226,6 +227,26 @@ func (s *service) GetDesign(id string) types.Blueprint {
 		return design
 	}
 	return design
+}
+
+func (s *service) GetCookData() []types.Recipe {
+	q := "SELECT ing1,ing1quantity,ing2,ing2Quantity,result,resultQuantity FROM recipe"
+	enemies := make([]types.Recipe, 0, 50)
+	rows, err := s.db.Query(q)
+	if err != nil {
+		log.Printf("Getting enemies data failed: %v", err)
+		return enemies
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var recipe types.Recipe
+		if err := rows.Scan(&recipe.Ing1, &recipe.Ing1Quantity, &recipe.Ing2, &recipe.Ing2Quantity, &recipe.Result, &recipe.ResultQuantity); err != nil {
+			log.Printf("Failed Parsing recipes row: %v", err)
+			return enemies
+		}
+		enemies = append(enemies, recipe)
+	}
+	return enemies
 }
 
 func New() Service {
