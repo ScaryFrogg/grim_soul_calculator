@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, inject } from "vue"
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import type { Api, MaterialInfo, Trade } from "@/types"
 
 const route = useRoute()
+const router = useRouter()
 const material = ref<MaterialInfo | null>(null)
 const trades = ref<Trade[]>([])
 const api = inject<Api>("api")
@@ -23,27 +24,34 @@ onMounted(() => {
     .catch(e => console.error(e))
 })
 
+const navigate = (whereTo: number | undefined) => {
+  if (whereTo) {
+    router.push(`/design/${whereTo}`)
+  }
+}
 </script>
 <template>
   <div v-if="material != null">
     <h2>{{ material.name }}</h2>
     <Card>
+      <template #title>
+        Used For:
+      </template>
       <template #content>
-        <h3>Used For:</h3>
-        <p class="m-0">
-        <div v-for="(f, i) in material.designs" :key=i>
-          <router-link :to="`/design/${f.designId}`">{{ f.design }}</router-link>
+        <p class="text-primary" v-for="(f, i) in material.designs" :key=i @click="navigate(f.designId)">
+          {{ f.design }}
           : {{ f.quantity }}
-        </div>
         </p>
       </template>
     </Card>
-    <Card>
+    <Card v-if="trades.length > 0">
+      <template #title>
+        Trades
+      </template>
       <template #content>
-        <h3>Trades</h3>
-        <div v-for="(f, i) in trades" :key=i>
+        <p class="text-primary" v-for="(f, i) in trades" :key=i>
           {{ f.giveName }} X {{ f.giveQuantity }} -> {{ f.getName }} X {{ f.getQuantity }}
-        </div>
+        </p>
       </template>
     </Card>
   </div>
