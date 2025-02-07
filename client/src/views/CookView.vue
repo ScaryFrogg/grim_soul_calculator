@@ -14,8 +14,8 @@ api?.get("cook")
 <template>
   <div class="flex flex-column align-items-center">
     <h2 class="text-center">Cook Recipes</h2>
-    <div class="flex justify-content-between cook-box w-full" v-for="v, i in recipes" :key="i">
-      <div class="w-5">
+    <div class="flex justify-content-between cook-box w-full xl:w-7" v-for="v, i in recipes" :key="i">
+      <div class="w-6">
         <span>
           {{ v.ing1 }}x {{ v.ing1Quantity }}
         </span>
@@ -24,7 +24,7 @@ api?.get("cook")
           {{ v.ing2 }}x {{ v.ing2Quantity }}
         </span>
       </div>
-      <div class="flex justify-content-between w-5">
+      <div class="flex justify-content-between w-4">
         <div>=</div>
         <span>
           {{ v.result }}x {{ v.resultQuantity }}
@@ -35,7 +35,7 @@ api?.get("cook")
 </template>
 <style scoped>
 .cook-box {
-  padding: 1rem;
+  padding: 10px;
   border: 1px solid white
 }
 </style>
