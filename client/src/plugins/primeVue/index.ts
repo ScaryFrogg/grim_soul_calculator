@@ -10,6 +10,7 @@ import Button from "primevue/button"
 import Card from "primevue/card"
 import DataTable from "primevue/datatable"
 import Column from "primevue/column"
+import Listbox from "primevue/listbox"
 
 export default {
 	install: (app: App) => {
@@ -18,6 +19,7 @@ export default {
 		app.component('Card', Card);
 		app.component('DataTable', DataTable);
 		app.component('Column', Column);
+		app.component('Listbox', Listbox);
 
 		app.directive("ripple", Ripple)
 	}

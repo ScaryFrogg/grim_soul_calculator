@@ -3,7 +3,6 @@ import { ref, inject } from "vue"
 import type { Ref } from "vue"
 import type { Api, Design } from "@/types"
 import { useRouter } from "vue-router"
-import Listbox from "primevue/listbox"
 const api = inject<Api>("api")
 const router = useRouter()
 

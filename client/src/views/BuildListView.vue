@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Listbox from "primevue/listbox"
 import { ref, watchEffect, inject } from "vue"
 import type { Api, Design, Requirement } from "@/types"
 const api = inject<Api>("api")
