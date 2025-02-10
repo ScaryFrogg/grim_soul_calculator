@@ -41,12 +41,12 @@ const getReq = async (planId: number) => {
     <div class="w-9 md:w-5">
       <p>Select Designs to Build</p>
       <Listbox v-model="selectedDesigns" :options="designs" filter optionLabel="name"
-        listStyle="height:250px; text-align:center" striped multiple />
+        listStyle="max-height:500px; text-align:center" striped multiple />
     </div>
     <div class="w-9 md:w-5">
       <p>Total Materials</p>
       <Listbox emptyMessage="Select Designs To Get List of Materials" :options="Object.keys(requirements)"
-        listStyle="height:250px" striped>
+        listStyle="max-height:500px" striped>
         <template #option="row">
           <div class="flex justify-content-between">
             <span>{{ row.option }}</span>

@@ -31,17 +31,21 @@ const navigate = (whereTo: number | undefined) => {
 }
 </script>
 <template>
-  <div v-if="material != null">
-    <h2>{{ material.name }}</h2>
-    <Card>
+  <div class="flex flex-column align-items-center" v-if="material != null">
+    <h2 class="my-5">{{ material.name }}</h2>
+    <Card class="md:w-5">
       <template #title>
         Used For:
       </template>
       <template #content>
-        <p class="text-primary" v-for="(f, i) in material.designs" :key=i @click="navigate(f.designId)">
-          {{ f.design }}
-          : {{ f.quantity }}
-        </p>
+        <div v-for="(f, i) in material.designs" :key=i @click="navigate(f.designId)">
+          <span class="text-primary">
+            {{ f.design }}
+          </span>
+          <span>
+            : {{ f.quantity }}
+          </span>
+        </div>
       </template>
     </Card>
     <Card v-if="trades.length > 0">
