@@ -47,8 +47,9 @@ type BuildBaseInfo struct {
 }
 
 type MaterialInfo struct {
-	Name    string             `json:"name"`
-	Designs []BuildRequirement `json:"designs"`
+	Name        string             `json:"name"`
+	Description *string            `json:"description,omitempty"`
+	Designs     []BuildRequirement `json:"designs"`
 }
 
 type BuildRequirement struct {

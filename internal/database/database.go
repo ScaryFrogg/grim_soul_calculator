@@ -22,7 +22,7 @@ type Service interface {
 	GetTrades() []types.Trade
 	GetTradesForItem(id string) []types.Trade
 	GetDesign(id string) types.Blueprint
-	GetItem(materialId string) (name string, err error)
+	GetItem(materialId string) (*types.MaterialInfo, error)
 	GetDesignsForItem(materialId string) []types.BuildRequirement
 	GetRequirements(design string) []types.Requirement
 	GetCookData() []types.Recipe
@@ -91,20 +91,21 @@ func (s *service) GetTradesForItem(id string) []types.Trade {
 	return trades
 }
 
-func (s *service) GetItem(materialId string) (name string, err error) {
-	q := `	SELECT name 
+func (s *service) GetItem(materialId string) (*types.MaterialInfo, error) {
+	q := `	SELECT name, description 
 		FROM item
 		WHERE id = ?`
 
 	row := s.db.QueryRow(q, materialId)
-	if err := row.Scan(&name); err != nil {
+	var material types.MaterialInfo
+	if err := row.Scan(&material.Name, &material.Description); err != nil {
 		if err == sql.ErrNoRows {
-			return "", fmt.Errorf("Not Found Material with id %v", materialId)
+			return nil, fmt.Errorf("Not Found Material with id %v", materialId)
 		}
 		log.Printf("design ById %v: %v", materialId, err)
-		return "", fmt.Errorf("Failed QUERY")
+		return nil, fmt.Errorf("Failed QUERY")
 	}
-	return name, nil
+	return &material, nil
 }
 
 func (s *service) GetDesignsForItem(materialId string) []types.BuildRequirement {

@@ -21,6 +21,7 @@ export interface Trade {
 }
 export interface MaterialInfo {
 	name: string
+	description: string | null
 	designs: DesignRequirement[]
 }
 export interface DesignRequirement {

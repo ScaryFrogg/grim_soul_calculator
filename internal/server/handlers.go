@@ -36,7 +36,7 @@ func (s *Server) GetItemHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//get design
-	materialName, err := s.db.GetItem(id)
+	material, err := s.db.GetItem(id)
 	if err != nil {
 		fmt.Printf("Failed to get material with Id [%v] design data-> error %v", id, err)
 		return
@@ -45,8 +45,8 @@ func (s *Server) GetItemHandler(w http.ResponseWriter, r *http.Request) {
 	//get requirements
 	designs := s.db.GetDesignsForItem(id)
 	w.Header().Set("Content-Type", "application/json")
-	info := types.MaterialInfo{Name: materialName, Designs: designs}
-	writeJSONResponse(w, info, http.StatusOK)
+	material.Designs = designs
+	writeJSONResponse(w, material, http.StatusOK)
 }
 
 func (s *Server) GetBlueprintHandler(w http.ResponseWriter, r *http.Request) {

@@ -48,6 +48,12 @@ const navigate = (whereTo: number | undefined) => {
         </div>
       </template>
     </Card>
+    <Card v-if="material.description != null">
+      <template #content>
+        {{ material.description }}
+      </template>
+    </Card>
+
     <Card v-if="trades.length > 0">
       <template #title>
         Trades
