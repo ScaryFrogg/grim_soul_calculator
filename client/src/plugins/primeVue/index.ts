@@ -4,7 +4,10 @@ import "primevue/resources/primevue.min.css"
 import "primevue/resources/themes/aura-dark-purple/theme.css"
 import "../../../node_modules/primeflex/primeflex.css"
 
+import 'primeicons/primeicons.css'
+
 import Ripple from "primevue/ripple"
+import ToastService from 'primevue/toastservice';
 
 import Button from "primevue/button"
 import Card from "primevue/card"
@@ -21,6 +24,7 @@ export default {
 		app.component('Column', Column);
 		app.component('Listbox', Listbox);
 
+		app.use(ToastService);
 		app.directive("ripple", Ripple)
 	}
 }
