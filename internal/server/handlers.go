@@ -3,8 +3,6 @@ package server
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/ScaryFrogg/grim_soul_calculator/internal/common"
 )
 
 func (s *Server) TradesForIdHandler(w http.ResponseWriter, r *http.Request) {
