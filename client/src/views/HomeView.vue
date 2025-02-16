@@ -13,6 +13,9 @@
             <RouterLink to="/weapons">Weapons</RouterLink>
           </li>
           <li>
+            <RouterLink to="/armor">Armor</RouterLink>
+          </li>
+          <li>
             <RouterLink to="/trades">Trades</RouterLink>
           </li>
           <li>
