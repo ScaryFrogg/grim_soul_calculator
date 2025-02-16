@@ -48,7 +48,7 @@ func TestDesigns(t *testing.T) {
 	RequestAndParseResponse(t, "/designs", &result)
 
 	if len(result) == 0 {
-		t.Log("expected to find designs")
+		t.Fatal("expected to find designs")
 	}
 
 }
@@ -58,7 +58,27 @@ func TestCook(t *testing.T) {
 	RequestAndParseResponse(t, "/cook", &result)
 
 	if len(result) == 0 {
-		t.Log("expected to find designs")
+		t.Fatal("expected to find designs")
+	}
+
+}
+
+func TestSets(t *testing.T) {
+	var result []types.ArmorData
+	RequestAndParseResponse(t, "/armor", &result)
+
+	if len(result) == 0 {
+		t.Fatal("expected to find sets")
+	}
+
+}
+
+func TestSetPieces(t *testing.T) {
+	var result []types.ArmorData
+	RequestAndParseResponse(t, "/armor/set/12", &result)
+
+	if len(result) != 5 {
+		t.Fatal("expected to find 5 set item")
 	}
 
 }
@@ -68,7 +88,7 @@ func TestRequirementById(t *testing.T) {
 	RequestAndParseResponse(t, "/requirement/1", &result)
 
 	if len(result) == 0 {
-		t.Log("expected to find requirements")
+		t.Fatal("expected to find requirements")
 	}
 
 }
@@ -87,7 +107,7 @@ func TestTrades(t *testing.T) {
 	var result []types.Trade
 	RequestAndParseResponse(t, "/trades", &result)
 	if len(result) == 0 {
-		t.Log("expected to find trades")
+		t.Fatal("expected to find trades")
 	}
 
 	t.Logf("found %d trades\n", len(result))

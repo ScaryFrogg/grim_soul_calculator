@@ -14,24 +14,20 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// Service represents a service that interacts with a database.
 type Service interface {
 	WeaponData() []types.Weapon
 	GetEnemies() []types.Enemy
 	GetDesigns() []types.BuildBaseInfo
-	GetTrades() []types.Trade
-	GetTradesForItem(id string) []types.Trade
 	GetDesign(id string) types.Blueprint
 	GetItem(materialId string) (*types.MaterialInfo, error)
 	GetDesignsForItem(materialId string) []types.BuildRequirement
 	GetRequirements(design string) []types.Requirement
+	GetSets() []types.ArmorData
+	GetPiecesForSet(id int) []types.ArmorData
+	GetTrades() []types.Trade
+	GetTradesForItem(id string) []types.Trade
 	GetCookData() []types.Recipe
-	// Health returns a map of health status information.
-	// The keys and values in the map are service-specific.
 	Health() map[string]string
-
-	// Close terminates the database connection.
-	// It returns an error if the connection cannot be closed.
 	Close() error
 }
 
@@ -43,157 +39,6 @@ var (
 	dburl      string
 	dbInstance *service
 )
-
-func (s *service) GetTrades() []types.Trade {
-	q := `SELECT give_id, give_quantity, give.name, get_id, get_quantity, get.name FROM trade
-		INNER JOIN item give ON give_id = give.id
-		INNER JOIN item get ON get_id = get.id`
-
-	trades := make([]types.Trade, 0)
-	rows, err := s.db.Query(q)
-	if err != nil {
-		log.Printf("Getting trades data failed: %v", err)
-		return trades
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var req types.Trade
-		if err := rows.Scan(&req.GiveId, &req.GiveQuantity, &req.GiveName, &req.GetId, &req.GetQuantity, &req.GetName); err != nil {
-			log.Printf("Failed Parsing trades row: %v", err)
-			return trades
-		}
-		trades = append(trades, req)
-	}
-	return trades
-}
-
-func (s *service) GetTradesForItem(id string) []types.Trade {
-	q := `SELECT give_quantity, give.name, get_quantity, get.name FROM trade
-		INNER JOIN item give ON give_id = give.id
-		INNER JOIN item get ON get_id = get.id
-		WHERE give_id = ? OR get_id = ?`
-
-	trades := make([]types.Trade, 0)
-	rows, err := s.db.Query(q, id, id)
-	if err != nil {
-		log.Printf("Getting trades data failed: %v", err)
-		return trades
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var req types.Trade
-		if err := rows.Scan(&req.GiveQuantity, &req.GiveName, &req.GetQuantity, &req.GetName); err != nil {
-			log.Printf("Failed Parsing trades row: %v", err)
-			return trades
-		}
-		trades = append(trades, req)
-	}
-	return trades
-}
-
-func (s *service) GetItem(materialId string) (*types.MaterialInfo, error) {
-	q := `	SELECT name, description 
-		FROM item
-		WHERE id = ?`
-
-	row := s.db.QueryRow(q, materialId)
-	var material types.MaterialInfo
-	if err := row.Scan(&material.Name, &material.Description); err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("Not Found Material with id %v", materialId)
-		}
-		log.Printf("design ById %v: %v", materialId, err)
-		return nil, fmt.Errorf("Failed QUERY")
-	}
-	return &material, nil
-}
-
-func (s *service) GetDesignsForItem(materialId string) []types.BuildRequirement {
-	q := `	SELECT design.name, design_id, quantity
-		FROM craft_requirement
-		INNER JOIN design ON design.id = design_id
-		WHERE material_id = ?`
-
-	requiremets := make([]types.BuildRequirement, 0)
-	rows, err := s.db.Query(q, materialId)
-	if err != nil {
-		log.Printf("Getting  dati failed: %v", err)
-		return requiremets
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var req types.BuildRequirement
-		if err := rows.Scan(&req.Design, &req.DesignId, &req.Quantity); err != nil {
-			log.Printf("Failed Parsing requiremets row: %v", err)
-			return requiremets
-		}
-		requiremets = append(requiremets, req)
-	}
-	return requiremets
-}
-func (s *service) GetDesigns() []types.BuildBaseInfo {
-	q := "select name, id from design"
-	requiremets := make([]types.BuildBaseInfo, 0)
-	rows, err := s.db.Query(q)
-	if err != nil {
-		log.Printf("Getting designs data failed: %v", err)
-		return requiremets
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var info types.BuildBaseInfo
-		if err := rows.Scan(&info.Name, &info.Id); err != nil {
-			log.Printf("Failed Parsing designgs row: %v", err)
-			return requiremets
-		}
-		requiremets = append(requiremets, info)
-	}
-	return requiremets
-}
-
-func (s *service) GetRequirements(design string) []types.Requirement {
-	q := `SELECT item.id, item.name, quantity
-		FROM craft_requirement
-		INNER JOIN design on design.id = design_id
-		INNER JOIN item on item.id = material_id
-		where design.id = ?`
-	requiremets := make([]types.Requirement, 0, 10)
-	rows, err := s.db.Query(q, design)
-	if err != nil {
-		log.Printf("Getting requirement data failed: %v", err)
-		return requiremets
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var req types.Requirement
-		if err := rows.Scan(&req.Id, &req.Name, &req.Quantity); err != nil {
-			log.Printf("Failed Parsing requiremets row: %v", err)
-			return requiremets
-		}
-		requiremets = append(requiremets, req)
-	}
-	return requiremets
-}
-
-func (s *service) WeaponData() []types.Weapon {
-	q := "SELECT name, damage, attack_speed as attackSpeed, s1,s2,s3,s4,s5 FROM weapon LEFT JOIN sharpen ON weapon.id = sharpen.weapon_id"
-	weapons := make([]types.Weapon, 0, 32)
-	rows, err := s.db.Query(q)
-	if err != nil {
-		log.Printf("Getting weapons data failed: %v", err)
-		return weapons
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var weapon types.Weapon
-		if err := rows.Scan(&weapon.Name, &weapon.Damage, &weapon.AttackSpeed, &weapon.S1, &weapon.S2, &weapon.S3, &weapon.S4, &weapon.S5); err != nil {
-			log.Printf("Failed Parsing weapons row: %v", err)
-			return weapons
-		}
-		weapons = append(weapons, weapon)
-	}
-	return weapons
-}
 
 func (s *service) GetEnemies() []types.Enemy {
 	q := "select name, health, armor from enemy"
@@ -211,41 +56,6 @@ func (s *service) GetEnemies() []types.Enemy {
 			return enemies
 		}
 		enemies = append(enemies, enemy)
-	}
-	return enemies
-}
-
-func (s *service) GetDesign(id string) types.Blueprint {
-	q := "select id, name, next from design where id = ?"
-	var design types.Blueprint
-	row := s.db.QueryRow(q, id)
-	if err := row.Scan(&design.Id, &design.Name, &design.Next); err != nil {
-		if err == sql.ErrNoRows {
-			log.Printf("No Design found with id [%v]", id)
-			return design
-		}
-		log.Printf("design ById %v: %v", id, err)
-		return design
-	}
-	return design
-}
-
-func (s *service) GetCookData() []types.Recipe {
-	q := "SELECT ing1,ing1quantity,ing2,ing2Quantity,result,resultQuantity FROM recipe"
-	enemies := make([]types.Recipe, 0, 50)
-	rows, err := s.db.Query(q)
-	if err != nil {
-		log.Printf("Getting enemies data failed: %v", err)
-		return enemies
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var recipe types.Recipe
-		if err := rows.Scan(&recipe.Ing1, &recipe.Ing1Quantity, &recipe.Ing2, &recipe.Ing2Quantity, &recipe.Result, &recipe.ResultQuantity); err != nil {
-			log.Printf("Failed Parsing recipes row: %v", err)
-			return enemies
-		}
-		enemies = append(enemies, recipe)
 	}
 	return enemies
 }

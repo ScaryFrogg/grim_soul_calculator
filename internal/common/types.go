@@ -71,3 +71,13 @@ type Recipe struct {
 	Ing2Quantity   *int    `json:"ing2Quantity,omitempty"`
 	ResultQuantity int     `json:"resultQuantity"`
 }
+
+type ArmorData struct {
+	Name       string  `json:"name"`
+	Protection *string `json:"protection,omitempty"`
+	Crafting   *string `json:"crafting,omitempty"`
+	Effect     *string `json:"effect,omitempty"`
+	Id         int     `json:"id"`
+	Armor      int     `json:"armor"`
+	Durability *int    `json:"durability,omitempty"`
+}

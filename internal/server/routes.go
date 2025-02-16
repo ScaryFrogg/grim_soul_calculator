@@ -20,6 +20,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /trades", s.TradesHandler)
 	mux.HandleFunc("GET /trades/{id}", s.TradesForIdHandler)
 	mux.HandleFunc("GET /cook", s.CookHandler)
+	mux.HandleFunc("GET /armor", s.ArmorSetsHandler)
+	mux.HandleFunc("GET /armor/set/{id}", s.SetPiecesHandler)
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)

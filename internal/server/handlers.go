@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func (s *Server) TradesForIdHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,12 +15,26 @@ func (s *Server) TradesForIdHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetTradesForItem(id), http.StatusOK)
 }
 
+func (s *Server) ArmorSetsHandler(w http.ResponseWriter, r *http.Request) {
+	writeJSONResponse(w, s.db.GetSets(), http.StatusOK)
+}
+
 func (s *Server) TradesHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetTrades(), http.StatusOK)
 }
 
 func (s *Server) DesingnsHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetDesigns(), http.StatusOK)
+}
+
+func (s *Server) SetPiecesHandler(w http.ResponseWriter, r *http.Request) {
+	id_string := r.PathValue("id")
+	id, err := strconv.Atoi(id_string)
+	if err != nil {
+		http.Error(w, "Id not valid", http.StatusNotFound)
+	}
+
+	writeJSONResponse(w, s.db.GetPiecesForSet(id), http.StatusOK)
 }
 
 func (s *Server) RequirementHandler(w http.ResponseWriter, r *http.Request) {
