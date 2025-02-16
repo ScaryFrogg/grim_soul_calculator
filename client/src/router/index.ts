@@ -7,6 +7,7 @@ import BuildListView from "../views/BuildListView.vue"
 import TradesView from "../views/TradesView.vue"
 import WeaponsView from "../views/WeaponsView.vue"
 import CookView from "../views/CookView.vue"
+import ArmorView from "../views/ArmorView.vue"
 
 const routes = [
   { path: "/", component: HomeView },
@@ -17,6 +18,7 @@ const routes = [
   { path: "/trades", component: TradesView },
   { path: "/weapons", component: WeaponsView },
   { path: "/cook", component: CookView },
+  { path: "/armor/:id?", component: ArmorView },
 ]
 
 

@@ -47,3 +47,12 @@ export interface Recipe {
 	ing2Quantity: number | null
 	resultQuantity: number
 }
+export interface ArmorInfo {
+	name: string
+	protection: string | null
+	crafting: string | null
+	effect: string | null
+	id: number
+	armor: number
+	durability: number | null
+}
