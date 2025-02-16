@@ -80,4 +80,11 @@ type ArmorData struct {
 	Id         int     `json:"id"`
 	Armor      int     `json:"armor"`
 	Durability *int    `json:"durability,omitempty"`
+	Slot       *int    `json:"slot,omitempty"`
+}
+
+type Shield struct {
+	Name  string `json:"name"`
+	Id    int    `json:"id"`
+	Armor int    `json:"armor"`
 }

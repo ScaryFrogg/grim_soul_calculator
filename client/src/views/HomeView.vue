@@ -34,6 +34,9 @@
       <template #content>
         <ul>
           <li>
+            <RouterLink to="/armorCalculator">Armor-DmgReduction Calculator</RouterLink>
+          </li>
+          <li>
             <RouterLink to="/buildList">Building Calculator</RouterLink>
           </li>
         </ul>

@@ -6,6 +6,26 @@ import (
 	"github.com/ScaryFrogg/grim_soul_calculator/internal/common"
 )
 
+func (s *service) ShieldsData() []types.Shield {
+	q := "SELECT id,name,armor FROM shield"
+	shields := make([]types.Shield, 0)
+	rows, err := s.db.Query(q)
+	if err != nil {
+		log.Printf("Getting shield data failed: %v", err)
+		return shields
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var shield types.Shield
+		if err := rows.Scan(&shield.Id, &shield.Name, &shield.Armor); err != nil {
+			log.Printf("Failed Parsing shield row: %v", err)
+			return shields
+		}
+		shields = append(shields, shield)
+	}
+	return shields
+}
+
 func (s *service) WeaponData() []types.Weapon {
 	q := "SELECT name, damage, attack_speed as attackSpeed, s1,s2,s3,s4,s5 FROM weapon LEFT JOIN sharpen ON weapon.id = sharpen.weapon_id"
 	weapons := make([]types.Weapon, 0, 32)
@@ -24,6 +44,32 @@ func (s *service) WeaponData() []types.Weapon {
 		weapons = append(weapons, weapon)
 	}
 	return weapons
+}
+
+func (s *service) ArmorPerSlot() [5][]types.ArmorData {
+	q := "select id,name,armor,protection,durability,crafting,effect,slot from armor order by slot"
+	var result [5][]types.ArmorData
+
+	allArmor := make([]types.ArmorData, 0)
+	rows, err := s.db.Query(q)
+	if err != nil {
+		log.Printf("Getting sets data failed: %v", err)
+		return result
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var req types.ArmorData
+		if err := rows.Scan(&req.Id, &req.Name, &req.Armor, &req.Protection, &req.Durability, &req.Crafting, &req.Effect, &req.Slot); err != nil {
+			log.Printf("Failed Parsing sets row: %v", err)
+			return result
+		}
+		allArmor = append(allArmor, req)
+	}
+	size := len(allArmor) / 5
+	for i := 0; i < 5; i++ {
+		result[i] = allArmor[i*size : size*(i+1)]
+	}
+	return result
 }
 
 func (s *service) GetSets() []types.ArmorData {

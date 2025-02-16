@@ -24,7 +24,7 @@ func setupServer() *Server {
 }
 
 func TestMain(m *testing.M) {
-	absPath, err := filepath.Abs("../../gs_calc_test.db")
+	absPath, err := filepath.Abs("../../gs_calc.db")
 	if err != nil {
 		fmt.Printf("error resolving database path: %v\n", err)
 		os.Exit(1)
@@ -111,6 +111,16 @@ func TestTrades(t *testing.T) {
 	}
 
 	t.Logf("found %d trades\n", len(result))
+}
+
+func TestShields(t *testing.T) {
+	var result []types.Shield
+	RequestAndParseResponse(t, "/shields", &result)
+	if len(result) == 0 {
+		t.Fatal("expected to find shields")
+	}
+
+	t.Logf("found %d shields\n", len(result))
 }
 
 func TestGetItemHandler(t *testing.T) {

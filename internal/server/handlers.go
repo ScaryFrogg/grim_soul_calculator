@@ -19,6 +19,13 @@ func (s *Server) ArmorSetsHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetSets(), http.StatusOK)
 }
 
+func (s *Server) GetShieldsHandler(w http.ResponseWriter, r *http.Request) {
+	writeJSONResponse(w, s.db.ShieldsData(), http.StatusOK)
+}
+func (s *Server) GetArmorPerSlotHandler(w http.ResponseWriter, r *http.Request) {
+	writeJSONResponse(w, s.db.ArmorPerSlot(), http.StatusOK)
+}
+
 func (s *Server) TradesHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetTrades(), http.StatusOK)
 }

@@ -11,12 +11,15 @@ const navigate = (whereTo: string | undefined) => {
 }
 const items = ref([
   { label: 'Home', url: '/', },
+  { label: 'Armor-DmgReduction', url: '/armorcalculator', },
   { label: 'Crafting List', url: '/buildList', },
+  { separator: true },
   { label: 'Designs', url: '/designs', },
   { label: 'Trades', url: '/trades', },
   { label: 'Cook', url: '/cook', },
   { label: 'Weapons', url: '/weapons', },
   { label: 'Armor', url: '/armor/', },
+
 ]);
 
 //  label: 'Data', items: [{ label: 'Designs', url: '/designs', }, { label: 'Trades', url: '/trades', }, { label: 'Materials', url: '/materials', }, { separator: true }, { label: 'Weapons', url: '/weapons', },      /* {        label: 'Grindstone',        url: '/grindstone',      }, */      { label: 'Enemies', url: '/enemies', },]

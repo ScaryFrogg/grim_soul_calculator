@@ -16,8 +16,10 @@ import (
 
 type Service interface {
 	WeaponData() []types.Weapon
+	ShieldsData() []types.Shield
 	GetEnemies() []types.Enemy
 	GetDesigns() []types.BuildBaseInfo
+	ArmorPerSlot() [5][]types.ArmorData
 	GetDesign(id string) types.Blueprint
 	GetItem(materialId string) (*types.MaterialInfo, error)
 	GetDesignsForItem(materialId string) []types.BuildRequirement

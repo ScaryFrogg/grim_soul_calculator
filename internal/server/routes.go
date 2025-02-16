@@ -22,6 +22,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /cook", s.CookHandler)
 	mux.HandleFunc("GET /armor", s.ArmorSetsHandler)
 	mux.HandleFunc("GET /armor/set/{id}", s.SetPiecesHandler)
+	mux.HandleFunc("GET /shields", s.GetShieldsHandler)
+	mux.HandleFunc("GET /armorPerSlot", s.GetArmorPerSlotHandler)
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)

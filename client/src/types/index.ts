@@ -56,3 +56,8 @@ export interface ArmorInfo {
 	armor: number
 	durability: number | null
 }
+export interface Shield {
+	id: number
+	name: string
+	armor: number
+}
