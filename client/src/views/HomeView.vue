@@ -2,45 +2,41 @@
 
 </script>
 <template>
-  <div>
-    <Card>
-      <template #title>
+  <div class="mt-8 flex justify-content-evenly">
+    <div>
+      <h2>
         Learn About the game
-      </template>
-      <template #content>
-        <ul>
-          <li>
-            <RouterLink to="/weapons">Weapons</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/armor">Armor</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/trades">Trades</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/designs">Designs</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/cook">Cook Recipes</RouterLink>
-          </li>
-        </ul>
-      </template>
-    </Card>
-    <Card>
-      <template #title>
+      </h2>
+      <ul>
+        <li>
+          <RouterLink to="/weapons">Weapons</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/armor">Armor Sets</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/trades">Trades</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/designs">Designs</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/cook">Cook Recipes</RouterLink>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2>
         Calculators
-      </template>
-      <template #content>
-        <ul>
-          <li>
-            <RouterLink to="/armorCalculator">Armor-DmgReduction Calculator</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/buildList">Building Calculator</RouterLink>
-          </li>
-        </ul>
-      </template>
-    </Card>
+      </h2>
+      <ul>
+        <li>
+          <RouterLink to="/armorCalculator">Armor-DmgReduction Calculator</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/buildList">Building Calculator</RouterLink>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

@@ -22,6 +22,6 @@ const navigate = (whereTo: Design) => {
   <div class="flex flex-column align-items-center">
     <h2 class="text-center">Designs</h2>
     <Listbox :options="designs" striped optionLabel="name" @update:modelValue="navigate" filter :filterFields="['name']"
-      class="w-9 md:w-5" />
+      class="w-9 md:w-5" list-style="max-height:80vh" />
   </div>
 </template>

@@ -18,7 +18,7 @@ const items = ref([
   { label: 'Trades', url: '/trades', },
   { label: 'Cook', url: '/cook', },
   { label: 'Weapons', url: '/weapons', },
-  { label: 'Armor', url: '/armor/', },
+  { label: 'Armor Sets', url: '/armor/', },
 
 ]);
 
