@@ -9,6 +9,26 @@ const loadout = ref<ArmorInfo[]>(Array(5))
 const shields = ref<Shield[]>([])
 const shield = ref<Shield | null>(null);
 const armorPerSlot = ref(Array(5))
+const dmgReductionData = [
+  { dmgr: 90, armor: 1485 },
+  { dmgr: 85, armor: 935 },
+  { dmgr: 80, armor: 660 },
+  { dmgr: 75, armor: 495 },
+  { dmgr: 70, armor: 385 },
+  { dmgr: 65, armor: 306.5 },
+  { dmgr: 60, armor: 247.5 },
+  { dmgr: 55, armor: 202 },
+  { dmgr: 50, armor: 165 },
+  { dmgr: 45, armor: 135 },
+  { dmgr: 40, armor: 110 },
+  { dmgr: 35, armor: 89 },
+  { dmgr: 30, armor: 71 },
+  { dmgr: 25, armor: 55 },
+  { dmgr: 20, armor: 41.25 },
+  { dmgr: 15, armor: 30 },
+  { dmgr: 10, armor: 18 },
+  { dmgr: 5, armor: 9 },
+]
 onMounted(() => {
   api?.get(`armor`)
     .then(data => {
@@ -61,35 +81,35 @@ watch(selectedSet, async (newS) => {
     </Card>
 
     <div class="p-3 w-full lg:w-5 flex flex-column">
-      <div class="flex">
+      <div class="flex align-items-center">
         <img src="/head_slot.png" />
         <div>
           <Dropdown v-model="loadout[0]" data-key="id" :options="armorPerSlot[0]" optionLabel="name"
             placeholder="armorPerSlot" />
         </div>
       </div>
-      <div class="flex">
+      <div class="flex align-items-center">
         <img src="/chest_slot.png" />
         <div>
           <Dropdown v-model="loadout[1]" data-key="id" :options="armorPerSlot[1]" optionLabel="name"
             placeholder="armorPerSlot" />
         </div>
       </div>
-      <div class="flex">
+      <div class="flex align-items-center">
         <img src="/hands_slot.png" />
         <div>
           <Dropdown v-model="loadout[2]" data-key="id" :options="armorPerSlot[2]" optionLabel="name"
             placeholder="armorPerSlot" />
         </div>
       </div>
-      <div class="flex">
+      <div class="flex align-items-center">
         <img src="/legs_slot.png" />
         <div>
           <Dropdown v-model="loadout[3]" data-key="id" :options="armorPerSlot[3]" optionLabel="name"
             placeholder="armorPerSlot" />
         </div>
       </div>
-      <div class="flex">
+      <div class="flex align-items-center">
         <img src="/boots_slot.png" />
         <div>
           <Dropdown v-model="loadout[4]" data-key="id" :options="armorPerSlot[4]" optionLabel="name"
@@ -103,11 +123,24 @@ watch(selectedSet, async (newS) => {
         </div>
       </div>
     </div>
-    <div class="p-3 w-full lg:w-3">
+    <div class="p-3 w-full lg:w-3 flex flex-column justify-content-center">
       <h2>
         Total Dmg Reduction: <span class="text-primary">{{ dmgReduction }}</span>%
       </h2>
     </div>
+  </div>
+  <div class="w-full flex flex-column align-items-center">
+    <h2>Table of Armor required for Damage Reduction</h2>
+    <Card class="w-full lg:w-4">
+      <template #content>
+        <div class="p-4">
+          <DataTable size="small" :value="dmgReductionData">
+            <Column sortable field="armor" header="Armor"></Column>
+            <Column sortable field="dmgr" header="Dmg Reduction (%)"></Column>
+          </DataTable>
+        </div>
+      </template>
+    </Card>
   </div>
 </template>
 <style scoped>
