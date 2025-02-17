@@ -2,12 +2,12 @@
 
 </script>
 <template>
-  <div class="mt-8 flex justify-content-evenly">
+  <div class="mt-8 flex flex-column md:flex-row justify-content-evenly">
     <div>
-      <h2>
+      <h2 class="text-center">
         Learn About the game
       </h2>
-      <ul>
+      <ul class="text-lg line-height-4 font-bold">
         <li>
           <RouterLink to="/weapons">Weapons</RouterLink>
         </li>
@@ -26,10 +26,10 @@
       </ul>
     </div>
     <div>
-      <h2>
+      <h2 class="text-center">
         Calculators
       </h2>
-      <ul>
+      <ul class="text-lg font-bold line-height-4">
         <li>
           <RouterLink to="/armorCalculator">Armor-DmgReduction Calculator</RouterLink>
         </li>
