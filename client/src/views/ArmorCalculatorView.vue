@@ -76,6 +76,8 @@ const protection = computed(() => {
       let set = sets.value?.find(s => s.id == first.setId)
       total.set(first.protectionType, total.get(first.protectionType) + set?.protection)
     }
+  } else {
+    selectedSet.value = undefined
   }
   for (let [k, v] of total) {
     total.set(k, getReductionFromArmor(v))
@@ -155,7 +157,7 @@ watch(selectedSet, async (newS) => {
       </h2>
       <h2 v-if="protection[0]">
         Elemental Reduction:
-        <p v-for="k, i of protection" :key="i">
+        <p v-for="k, i of protection" class="capitalize" :key="i">
           {{ k[0] }}
           <span :class="k[0]">
             :{{ k[1] }}
@@ -170,7 +172,7 @@ watch(selectedSet, async (newS) => {
     <Card class="w-full lg:w-4">
       <template #content>
         <div class="p-4">
-          <DataTable size="small" :value="dmgReductionData">
+          <DataTable scrollable scrollHeight="400px" size="small" :value="dmgReductionData" removableSort stripedRows>
             <Column sortable field="armor" header="Armor"></Column>
             <Column sortable field="dmgr" header="Dmg Reduction (%)"></Column>
           </DataTable>
@@ -186,12 +188,6 @@ img {
   cursor: pointer;
 }
 
-.fire,
-.cold,
-.decay {
-  text-transform: capitalize;
-}
-
 .fire {
   color: orange;
 }
@@ -202,6 +198,5 @@ img {
 
 .decay {
   color: #b3ff3f;
-  ;
 }
 </style>

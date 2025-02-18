@@ -20,8 +20,9 @@ onMounted(() => {
 </script>
 <template>
   <h2 class="text-center">Weapons</h2>
-  <DataTable size="small" :filters="filters" :value="weapons" tableStyle="max-width: 100vw;"
-    :globalFilterFields="['name', 'damage']" removableSort stripedRows :pt="{ root: { 'style': 'overflow:scroll' } }">
+  <DataTable scrollable scrollHeight="80vh" size="small" :filters="filters" :value="weapons"
+    tableStyle="max-width: 100vw;" :globalFilterFields="['name', 'damage']" removableSort stripedRows
+    :pt="{ root: { 'style': 'overflow:scroll' } }">
     <template #header>
       <div class="flex justify-content-center">
         <InputText v-model="filters['global'].value" placeholder="Search" />
