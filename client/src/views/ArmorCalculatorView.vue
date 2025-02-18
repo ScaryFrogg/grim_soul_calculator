@@ -46,6 +46,10 @@ onMounted(() => {
     })
     .catch(e => console.error(e))
 })
+function getReductionFromArmor(armor: number) {
+  let reduction = armor / (165 + armor) * 100
+  return Math.round((reduction + Number.EPSILON) * 100) / 100
+}
 const dmgReduction = computed(() => {
   let total = 0
   if (shield.value) {
@@ -54,9 +58,26 @@ const dmgReduction = computed(() => {
   if (loadout.value) {
     total += loadout.value.reduce((acc, y) => acc + y.armor, 0)
   }
-  let reduction = total / (165 + total) * 100
-  return Math.round((reduction + Number.EPSILON) * 100) / 100
+  return getReductionFromArmor(total)
 })
+const protection = computed(() => {
+  let total = new Map()
+  // if (shield.value) {
+  //   total += shield.value.
+  // }
+  loadout.value.filter(x => x.protection).forEach((l) => {
+    if (total.has(l.protectionType)) {
+      total.set(l.protectionType, total.get(l.protectionType) + l.protection)
+    } else {
+      total.set(l.protectionType, l.protection)
+    }
+  })
+  for (let [k, v] of total) {
+    total.set(k, getReductionFromArmor(v))
+  }
+  return Array.from(total)
+})
+
 watch(selectedSet, async (newS) => {
   if (newS && selectedSet.value) {
     await api?.get(`armor/set/${newS.id}`)
@@ -125,7 +146,17 @@ watch(selectedSet, async (newS) => {
     </div>
     <div class="p-3 w-full lg:w-3 flex flex-column justify-content-center">
       <h2>
-        Total Dmg Reduction: <span class="text-primary">{{ dmgReduction }}</span>%
+        Dmg Reduction: <span class="text-primary">{{ dmgReduction }}</span>%
+      </h2>
+      <h2 v-if="protection[0]">
+        Elemental Reduction:
+        <p v-for="k, i of protection" :key="i">
+          {{ k[0] }}
+          <span :class="k[0]">
+            :{{ k[1] }}
+          </span>
+          %
+        </p>
       </h2>
     </div>
   </div>
@@ -148,5 +179,24 @@ img {
   max-width: 100px;
   height: auto;
   cursor: pointer;
+}
+
+.fire,
+.cold,
+.decay {
+  text-transform: capitalize;
+}
+
+.fire {
+  color: orange;
+}
+
+.cold {
+  color: #9abdff;
+}
+
+.decay {
+  color: #b3ff3f;
+  ;
 }
 </style>

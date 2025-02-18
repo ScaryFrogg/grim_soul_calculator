@@ -49,7 +49,8 @@ export interface Recipe {
 }
 export interface ArmorInfo {
 	name: string
-	protection: string | null
+	protection: number | null
+	protectionType: string | null
 	crafting: string | null
 	effect: string | null
 	id: number

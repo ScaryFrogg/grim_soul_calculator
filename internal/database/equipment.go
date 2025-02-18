@@ -47,7 +47,10 @@ func (s *service) WeaponData() []types.Weapon {
 }
 
 func (s *service) ArmorPerSlot() [5][]types.ArmorData {
-	q := "select id,name,armor,protection,durability,crafting,effect,slot from armor order by slot"
+	q := `SELECT armor.id,armor.name,armor,protection,prot.name AS protectionType,durability,crafting,effect,slot
+		FROM armor 
+		LEFT JOIN protection_type prot ON armor.protection_type = prot.id
+		ORDER BY slot`
 	var result [5][]types.ArmorData
 
 	allArmor := make([]types.ArmorData, 0)
@@ -59,7 +62,7 @@ func (s *service) ArmorPerSlot() [5][]types.ArmorData {
 	defer rows.Close()
 	for rows.Next() {
 		var req types.ArmorData
-		if err := rows.Scan(&req.Id, &req.Name, &req.Armor, &req.Protection, &req.Durability, &req.Crafting, &req.Effect, &req.Slot); err != nil {
+		if err := rows.Scan(&req.Id, &req.Name, &req.Armor, &req.Protection, &req.ProtectionType, &req.Durability, &req.Crafting, &req.Effect, &req.Slot); err != nil {
 			log.Printf("Failed Parsing sets row: %v", err)
 			return result
 		}
@@ -73,7 +76,9 @@ func (s *service) ArmorPerSlot() [5][]types.ArmorData {
 }
 
 func (s *service) GetSets() []types.ArmorData {
-	q := "SELECT id,name,armor,protection,durability,crafting,effect FROM sets"
+	q := `SELECT sets.id,sets.name,armor,protection,prot.name AS protectionType,durability,crafting,effect FROM sets
+		LEFT JOIN protection_type prot ON sets.protection_type = prot.id
+	`
 	sets := make([]types.ArmorData, 0)
 	rows, err := s.db.Query(q)
 	if err != nil {
@@ -83,7 +88,7 @@ func (s *service) GetSets() []types.ArmorData {
 	defer rows.Close()
 	for rows.Next() {
 		var req types.ArmorData
-		if err := rows.Scan(&req.Id, &req.Name, &req.Armor, &req.Protection, &req.Durability, &req.Crafting, &req.Effect); err != nil {
+		if err := rows.Scan(&req.Id, &req.Name, &req.Armor, &req.Protection, &req.ProtectionType, &req.Durability, &req.Crafting, &req.Effect); err != nil {
 			log.Printf("Failed Parsing sets row: %v", err)
 			return sets
 		}
@@ -93,7 +98,9 @@ func (s *service) GetSets() []types.ArmorData {
 }
 
 func (s *service) GetPiecesForSet(id int) []types.ArmorData {
-	q := "SELECT id,name,armor,protection,durability,crafting,effect FROM armor WHERE set_id = ?"
+	q := `SELECT armor.id,armor.name,armor,protection,prot.name AS protectionType,durability,crafting,effect FROM armor
+		LEFT JOIN protection_type prot ON armor.protection_type = prot.id
+		WHERE set_id = ?`
 	sets := make([]types.ArmorData, 0)
 	rows, err := s.db.Query(q, id)
 	if err != nil {
@@ -103,7 +110,7 @@ func (s *service) GetPiecesForSet(id int) []types.ArmorData {
 	defer rows.Close()
 	for rows.Next() {
 		var req types.ArmorData
-		if err := rows.Scan(&req.Id, &req.Name, &req.Armor, &req.Protection, &req.Durability, &req.Crafting, &req.Effect); err != nil {
+		if err := rows.Scan(&req.Id, &req.Name, &req.Armor, &req.Protection, &req.ProtectionType, &req.Durability, &req.Crafting, &req.Effect); err != nil {
 			log.Printf("Failed Parsing set pieces row: %v", err)
 			return sets
 		}

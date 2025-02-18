@@ -73,14 +73,15 @@ type Recipe struct {
 }
 
 type ArmorData struct {
-	Name       string  `json:"name"`
-	Protection *string `json:"protection,omitempty"`
-	Crafting   *string `json:"crafting,omitempty"`
-	Effect     *string `json:"effect,omitempty"`
-	Id         int     `json:"id"`
-	Armor      int     `json:"armor"`
-	Durability *int    `json:"durability,omitempty"`
-	Slot       *int    `json:"slot,omitempty"`
+	Name           string  `json:"name"`
+	ProtectionType *string `json:"protectionType,omitempty"`
+	Crafting       *string `json:"crafting,omitempty"`
+	Effect         *string `json:"effect,omitempty"`
+	Id             int     `json:"id"`
+	Armor          int     `json:"armor"`
+	Protection     *int    `json:"protection,omitempty"`
+	Durability     *int    `json:"durability,omitempty"`
+	Slot           *int    `json:"slot,omitempty"`
 }
 
 type Shield struct {
