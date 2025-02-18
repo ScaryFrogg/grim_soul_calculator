@@ -62,16 +62,21 @@ const dmgReduction = computed(() => {
 })
 const protection = computed(() => {
   let total = new Map()
-  // if (shield.value) {
-  //   total += shield.value.
-  // }
-  loadout.value.filter(x => x.protection).forEach((l) => {
+  const protectionPieces = loadout.value.filter(x => x.protection)
+  protectionPieces.forEach((l) => {
     if (total.has(l.protectionType)) {
       total.set(l.protectionType, total.get(l.protectionType) + l.protection)
     } else {
       total.set(l.protectionType, l.protection)
     }
   })
+  if (protectionPieces.length == 5) {
+    const first = protectionPieces[0]
+    if (protectionPieces.every(x => x.setId == first.setId)) {
+      let set = sets.value?.find(s => s.id == first.setId)
+      total.set(first.protectionType, total.get(first.protectionType) + set?.protection)
+    }
+  }
   for (let [k, v] of total) {
     total.set(k, getReductionFromArmor(v))
   }

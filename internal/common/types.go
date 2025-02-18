@@ -82,6 +82,7 @@ type ArmorData struct {
 	Protection     *int    `json:"protection,omitempty"`
 	Durability     *int    `json:"durability,omitempty"`
 	Slot           *int    `json:"slot,omitempty"`
+	SetId          *int    `json:"setId,omitempty"`
 }
 
 type Shield struct {
