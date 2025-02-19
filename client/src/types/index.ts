@@ -63,3 +63,27 @@ export interface Shield {
 	name: string
 	armor: number
 }
+export interface EnemyInfo {
+	id: string;
+	name: string;
+}
+export interface Enemy {
+	id: string;
+	difficulty: string;
+	name: string;
+	special: string;
+	elemAttType?: string | null;
+	horM?: string | null;
+	fractureArmor?: string | null;
+	fractureWeapon?: string | null;
+	pierce?: string | null;
+	cold?: string | null;
+	fire?: string | null;
+	health: number;
+	armor: number;
+	attack: number;
+	elemAtt?: number | null;
+	soulEater?: number | null;
+	tgk?: number | null;
+	instakill?: boolean | null;
+}

@@ -23,6 +23,9 @@
         <li>
           <RouterLink to="/cook">Cook Recipes</RouterLink>
         </li>
+        <li>
+          <RouterLink to="/enemies">Enemies</RouterLink>
+        </li>
       </ul>
     </div>
     <div>

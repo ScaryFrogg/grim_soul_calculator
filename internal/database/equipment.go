@@ -49,7 +49,7 @@ func (s *service) WeaponData() []types.Weapon {
 func (s *service) ArmorPerSlot() [5][]types.ArmorData {
 	q := `SELECT armor.id,armor.name,armor,protection,prot.name AS protectionType,durability,crafting,effect,slot,set_id
 		FROM armor 
-		LEFT JOIN protection_type prot ON armor.protection_type = prot.id
+		LEFT JOIN elemental_type prot ON armor.protection_type = prot.id
 		ORDER BY slot`
 	var result [5][]types.ArmorData
 
@@ -77,7 +77,7 @@ func (s *service) ArmorPerSlot() [5][]types.ArmorData {
 
 func (s *service) GetSets() []types.ArmorData {
 	q := `SELECT sets.id,sets.name,armor,protection,prot.name AS protectionType,durability,crafting,effect FROM sets
-		LEFT JOIN protection_type prot ON sets.protection_type = prot.id`
+		LEFT JOIN elemental_type prot ON sets.protection_type = prot.id`
 	sets := make([]types.ArmorData, 0)
 	rows, err := s.db.Query(q)
 	if err != nil {
@@ -98,7 +98,7 @@ func (s *service) GetSets() []types.ArmorData {
 
 func (s *service) GetPiecesForSet(id int) []types.ArmorData {
 	q := `SELECT armor.id,armor.name,armor,protection,prot.name AS protectionType,durability,crafting,effect,set_id FROM armor
-		LEFT JOIN protection_type prot ON armor.protection_type = prot.id
+		LEFT JOIN elemental_type prot ON armor.protection_type = prot.id
 		WHERE set_id = ?`
 	sets := make([]types.ArmorData, 0)
 	rows, err := s.db.Query(q, id)

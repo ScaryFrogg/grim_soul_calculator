@@ -97,8 +97,8 @@ type Enemy struct {
 	Special        string  `json:"special"`
 	ElemAttType    *string `json:"elem_att_type,omitempty"`
 	HorM           *string `json:"horM,omitempty"`
-	FractureArmor  *string `json:"fractureArmor,omitempty"`
-	FractureWeapon *string `json:"fractureWeapon,omitempty"`
+	FractureArmor  *bool   `json:"fractureArmor,omitempty"`
+	FractureWeapon *bool   `json:"fractureWeapon,omitempty"`
 	Pierce         *string `json:"pierce,omitempty"`
 	Cold           *string `json:"cold,omitempty"`
 	Fire           *string `json:"fire,omitempty"`
@@ -109,7 +109,20 @@ type Enemy struct {
 	SoulEater      *int    `json:"soulEater,omitempty"`
 	Tgk            *int    `json:"tgk,omitempty"`
 	Instakill      *bool   `json:"instakill,omitempty"`
+	Reap           *string `json:"reap,omitempty"`
+	Poison         *string `json:"poison,omitempty"`
+	Frostbite      *string `json:"frostbite,omitempty"`
+	Bleed          *string `json:"bleed,omitempty"`
+	Ignite         *string `json:"ignite,omitempty"`
+	Blind          *bool   `json:"blind,omitempty"`
+	IcySlow        *bool   `json:"icySlow,omitempty"`
+	ShriekingSlow  *bool   `json:"shriekingSlow,omitempty"`
+	Fear           *bool   `json:"fear,omitempty"`
+	Exile          *bool   `json:"exile,omitempty"`
+	Freeze         *bool   `json:"freeze,omitempty"`
+	Stun           *bool   `json:"stun,omitempty"`
+	Soc1           *bool   `json:"soc1,omitempty"`
+	Soc2           *bool   `json:"soc2,omitempty"`
+	Soc3           *bool   `json:"soc3,omitempty"`
+	Trap           *bool   `json:"trap,omitempty"`
 }
-
-// Reap, Poison, Frostbite, Bleed, Ignite,   Blind,  'Icy Slow',  'Shrieking Slow',  Fear,
-// Exile,  Freeze,  Stun,   soc1,  soc2,   soc3,  Trap
