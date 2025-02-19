@@ -15,6 +15,17 @@ func (s *Server) TradesForIdHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetTradesForItem(id), http.StatusOK)
 }
 
+func (s *Server) GetEnemiesHandler(w http.ResponseWriter, r *http.Request) {
+	writeJSONResponse(w, s.db.GetEnemiesInfos(), http.StatusOK)
+}
+func (s *Server) GetEnemyByIdHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if id == "0" {
+		http.Error(w, "Id cant be nil/0", http.StatusNotFound)
+		return
+	}
+	writeJSONResponse(w, s.db.GetEnemyById(id), http.StatusOK)
+}
 func (s *Server) ArmorSetsHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.GetSets(), http.StatusOK)
 }
@@ -86,10 +97,6 @@ func (s *Server) GetBlueprintHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) WeaponDataHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, s.db.WeaponData(), http.StatusOK)
-}
-
-func (s *Server) GetEnemiesHandeler(w http.ResponseWriter, r *http.Request) {
-	writeJSONResponse(w, s.db.GetEnemies(), http.StatusOK)
 }
 
 func (s *Server) CookHandler(w http.ResponseWriter, r *http.Request) {

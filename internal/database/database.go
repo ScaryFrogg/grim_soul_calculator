@@ -17,7 +17,8 @@ import (
 type Service interface {
 	WeaponData() []types.Weapon
 	ShieldsData() []types.Shield
-	GetEnemies() []types.Enemy
+	GetEnemiesInfos() []types.EnemyListInfo
+	GetEnemyById(id string) []types.Enemy
 	GetDesigns() []types.BuildBaseInfo
 	ArmorPerSlot() [5][]types.ArmorData
 	GetDesign(id string) types.Blueprint
@@ -41,26 +42,6 @@ var (
 	dburl      string
 	dbInstance *service
 )
-
-func (s *service) GetEnemies() []types.Enemy {
-	q := "select name, health, armor from enemy"
-	enemies := make([]types.Enemy, 0, 200)
-	rows, err := s.db.Query(q)
-	if err != nil {
-		log.Printf("Getting enemies data failed: %v", err)
-		return enemies
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var enemy types.Enemy
-		if err := rows.Scan(&enemy.Name, &enemy.Health, &enemy.Armor); err != nil {
-			log.Printf("Failed Parsing enemies row: %v", err)
-			return enemies
-		}
-		enemies = append(enemies, enemy)
-	}
-	return enemies
-}
 
 func New() Service {
 	dburl = os.Getenv("BLUEPRINT_DB_URL") // Reuse Connection

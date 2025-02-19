@@ -15,7 +15,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /designs", s.DesingnsHandler)
 	mux.HandleFunc("GET /design/{id}", s.GetBlueprintHandler)
 	mux.HandleFunc("GET /item/{id}", s.GetItemHandler)
-	mux.HandleFunc("GET /enemies", s.GetEnemiesHandeler)
 	mux.HandleFunc("GET /requirement/{id}", s.RequirementHandler)
 	mux.HandleFunc("GET /trades", s.TradesHandler)
 	mux.HandleFunc("GET /trades/{id}", s.TradesForIdHandler)
@@ -24,6 +23,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /armor/set/{id}", s.SetPiecesHandler)
 	mux.HandleFunc("GET /shields", s.GetShieldsHandler)
 	mux.HandleFunc("GET /armorPerSlot", s.GetArmorPerSlotHandler)
+	mux.HandleFunc("GET /enemies", s.GetEnemiesHandler)
+	mux.HandleFunc("GET /enemy/{id}", s.GetEnemyByIdHandler)
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)

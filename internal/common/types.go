@@ -13,12 +13,6 @@ type Weapon struct {
 	S5          *int32  `json:"s5,omitempty"`
 }
 
-type Enemy struct {
-	Name   string `json:"name"`
-	Health int    `json:"health"`
-	Armor  int    `json:"armor"`
-}
-
 type Blueprint struct {
 	Name         string        `json:"name"`
 	Requirements []Requirement `json:"requirements"`
@@ -90,3 +84,32 @@ type Shield struct {
 	Id    int    `json:"id"`
 	Armor int    `json:"armor"`
 }
+
+type EnemyListInfo struct {
+	Name string `json:"name"`
+	Id   string `json:"id"`
+}
+
+type Enemy struct {
+	Id             string  `json:"id"`
+	Difficulty     string  `json:"difficulty"`
+	Name           string  `json:"name"`
+	Special        string  `json:"special"`
+	ElemAttType    *string `json:"elem_att_type,omitempty"`
+	HorM           *string `json:"horM,omitempty"`
+	FractureArmor  *string `json:"fractureArmor,omitempty"`
+	FractureWeapon *string `json:"fractureWeapon,omitempty"`
+	Pierce         *string `json:"pierce,omitempty"`
+	Cold           *string `json:"cold,omitempty"`
+	Fire           *string `json:"fire,omitempty"`
+	Health         int     `json:"health"`
+	Armor          int     `json:"armor"`
+	Attack         int     `json:"attack"`
+	ElemAtt        *int    `json:"elem_att,omitempty"`
+	SoulEater      *int    `json:"soulEater,omitempty"`
+	Tgk            *int    `json:"tgk,omitempty"`
+	Instakill      *bool   `json:"instakill,omitempty"`
+}
+
+// Reap, Poison, Frostbite, Bleed, Ignite,   Blind,  'Icy Slow',  'Shrieking Slow',  Fear,
+// Exile,  Freeze,  Stun,   soc1,  soc2,   soc3,  Trap
